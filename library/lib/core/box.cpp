@@ -1,5 +1,6 @@
 /*
     Copyright 2020-2021 natinusala
+    Copyright 2021 XITRIX
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -214,6 +215,25 @@ void Box::removeView(View* view)
 
     view->willDisappear(true);
     delete view;
+
+    this->invalidate();
+}
+
+void Box::clearViews()
+{
+    std::vector<View*> views = getChildren();
+
+    for (size_t i = 0; i < views.size(); i++)
+    {
+        View* view = this->children.back();
+        
+        // Remove it
+        YGNodeRemoveChild(this->ygNode, view->getYGNode());
+        this->children.pop_back();
+        
+        view->willDisappear(true);
+        delete view;
+    }
 
     this->invalidate();
 }

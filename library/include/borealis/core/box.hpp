@@ -1,5 +1,6 @@
 /*
     Copyright 2020-2021 natinusala
+    Copyright 2021 XITRIX
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -93,6 +94,11 @@ class Box : public View
      * Removes the given view from the Box. It will be freed.
      */
     virtual void removeView(View* view);
+
+    /**
+     * Removes all views from the Box. Them will be freed.
+     */
+    virtual void clearViews();
 
     /**
      * Sets the padding of the view, aka the internal space to give
