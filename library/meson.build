@@ -35,6 +35,7 @@ borealis_files = files(
     'lib/views/button.cpp',
     'lib/views/image.cpp',
     'lib/views/header.cpp',
+    'lib/views/hint.cpp',
 
     'lib/extern/glad/glad.c',
     'lib/extern/nanovg-gl/nanovg.c',

@@ -1,5 +1,6 @@
 /*
     Copyright 2019-2021 natinusala
+    Copyright 2021 XITRIX
     Copyright 2019 p-sam
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +16,14 @@
     limitations under the License.
 */
 
+#include <borealis/core/application.hpp>
+#include <borealis/core/i18n.hpp>
 #include <borealis/core/logger.hpp>
 #include <borealis/core/util.hpp>
 #include <borealis/views/applet_frame.hpp>
+#include <borealis/views/hint.hpp>
+
+using namespace brls::literals;
 
 namespace brls
 {
@@ -81,10 +87,12 @@ const std::string appletFrameXML = R"xml(
             lineTop="1px"
             justifyContent="spaceBetween" >
 
-            <brls:Rectangle
-                width="272px"
+            <brls:Box
+                id="hints"
+                width="auto"
                 height="auto"
-                color="#FF0000" />
+                axis="row"
+                direction="leftToRight" />
 
             <brls:Rectangle
                 width="75px"
@@ -109,6 +117,75 @@ AppletFrame::AppletFrame()
     });
 
     this->forwardXMLAttribute("iconInterpolation", this->icon, "interpolation");
+
+    Application::getGlobalFocusChangeEvent()->subscribe([this](View* view) {
+        refillHints(view);
+    });
+}
+
+bool actionsSortFunc(Action a, Action b)
+{
+    // From left to right:
+    //  - first +
+    //  - then all hints that are not B and A
+    //  - finally B and A
+
+    // + is before all others
+    if (a.button == BUTTON_START)
+        return true;
+
+    // A is after all others
+    if (b.button == BUTTON_A)
+        return true;
+
+    // B is after all others but A
+    if (b.button == BUTTON_B && a.button != BUTTON_A)
+        return true;
+
+    // Keep original order for the rest
+    return false;
+}
+
+void AppletFrame::refillHints(View* focusView)
+{
+    if (!focusView)
+        return;
+
+    hints->clearViews();
+
+    std::set<ControllerButton> addedButtons; // we only ever want one action per key
+    std::vector<Action> actions;
+
+    while (focusView != nullptr)
+    {
+        for (auto& action : focusView->getActions())
+        {
+            if (action.hidden)
+                continue;
+
+            if (addedButtons.find(action.button) != addedButtons.end())
+                continue;
+
+            addedButtons.insert(action.button);
+            actions.push_back(action);
+        }
+
+        focusView = focusView->getParent();
+    }
+
+    if (std::find(actions.begin(), actions.end(), BUTTON_A) == actions.end())
+    {
+        actions.push_back(Action { BUTTON_A, NULL, "brls/hints/ok"_i18n, false, false, Sound::SOUND_NONE, NULL });
+    }
+
+    // Sort the actions
+    std::stable_sort(actions.begin(), actions.end(), actionsSortFunc);
+
+    for (Action action : actions)
+    {
+        Hint* hint = new Hint(action);
+        hints->addView(hint);
+    }
 }
 
 void AppletFrame::setIconFromRes(std::string name)
