@@ -1,5 +1,6 @@
 /*
     Copyright 2020-2021 natinusala
+    Copyright 2021 XITRIX
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -46,7 +47,7 @@ class ScrollingFrame : public Box
     void onChildFocusLost(View* directChild, View* focusedView) override;
     void willAppear(bool resetState) override;
     void addView(View* view) override;
-    void removeView(View* view) override;
+    void removeView(View* view, bool free = true, bool invalidate = true) override;
     void onLayout() override;
     void setPadding(float top, float right, float bottom, float left) override;
     void setPaddingTop(float top) override;

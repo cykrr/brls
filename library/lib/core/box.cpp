@@ -1,5 +1,6 @@
 /*
     Copyright 2020-2021 natinusala
+    Copyright 2021 XITRIX
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -184,7 +185,7 @@ void Box::addView(View* view, size_t position)
     view->willAppear();
 }
 
-void Box::removeView(View* view)
+void Box::removeView(View* view, bool free, bool invalidate)
 {
     if (!view)
         return;
@@ -214,7 +215,19 @@ void Box::removeView(View* view)
     this->children.erase(this->children.begin() + index);
 
     view->willDisappear(true);
-    //    delete view;
+    if (free)
+        delete view;
+
+    if (invalidate)
+        this->invalidate();
+}
+
+void Box::clearViews()
+{
+    std::vector<View*> views = getChildren();
+
+    for (size_t i = 0; i < views.size(); i++)
+        removeView(views[i], true, false);
 
     this->invalidate();
 }
@@ -295,6 +308,9 @@ View* Box::getDefaultFocus()
     // Focus ourself first
     if (this->isFocusable())
         return this;
+
+    if (lastFocusedView)
+        return lastFocusedView;
 
     // Then try default focus
     if (this->defaultFocusedIndex < this->children.size())
@@ -590,6 +606,8 @@ void Box::onChildFocusGained(View* directChild, View* focusedView)
 {
     if (this->hasParent())
         this->getParent()->onChildFocusGained(this, focusedView);
+
+    lastFocusedView = focusedView;
 }
 
 void Box::onChildFocusLost(View* directChild, View* focusedView)

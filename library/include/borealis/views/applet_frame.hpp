@@ -1,5 +1,6 @@
 /*
     Copyright 2019-2021 natinusala
+    Copyright 2021 XITRIX
     Copyright 2019 p-sam
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,8 +49,11 @@ class AppletFrame : public Box
     static View* create();
 
   private:
+    void refillHints(View* focusView);
+
     BRLS_BIND(Label, title, "brls/applet_frame/title_label");
     BRLS_BIND(Image, icon, "brls/applet_frame/title_icon");
+    BRLS_BIND(Box, hints, "hints");
 
   protected:
     View* contentView = nullptr;

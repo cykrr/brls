@@ -1,5 +1,6 @@
 /*
     Copyright 2020-2021 natinusala
+    Copyright 2021 XITRIX
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -93,7 +94,12 @@ class Box : public View
     /**
      * Removes the given view from the Box. It will be freed.
      */
-    virtual void removeView(View* view);
+    virtual void removeView(View* view, bool free = true, bool invalidate = true);
+
+    /**
+     * Removes all views from the Box. Them will be freed.
+     */
+    virtual void clearViews();
 
     /**
      * Sets the padding of the view, aka the internal space to give
@@ -210,6 +216,7 @@ class Box : public View
     std::vector<View*> children;
 
     size_t defaultFocusedIndex = 0;
+    View* lastFocusedView      = nullptr;
 
     std::unordered_map<std::string, std::pair<std::string, View*>> forwardedAttributes;
 
