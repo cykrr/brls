@@ -185,7 +185,7 @@ void Box::addView(View* view, size_t position)
     view->willAppear();
 }
 
-void Box::removeView(View* view, bool free, bool invalidate)
+void Box::removeView(View* view, bool free)
 {
     if (!view)
         return;
@@ -217,17 +217,6 @@ void Box::removeView(View* view, bool free, bool invalidate)
     view->willDisappear(true);
     if (free)
         delete view;
-
-    if (invalidate)
-        this->invalidate();
-}
-
-void Box::clearViews()
-{
-    std::vector<View*> views = getChildren();
-
-    for (size_t i = 0; i < views.size(); i++)
-        removeView(views[i], true, false);
 
     this->invalidate();
 }

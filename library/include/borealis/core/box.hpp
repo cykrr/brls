@@ -94,12 +94,7 @@ class Box : public View
     /**
      * Removes the given view from the Box. It will be freed.
      */
-    virtual void removeView(View* view, bool free = true, bool invalidate = true);
-
-    /**
-     * Removes all views from the Box. Them will be freed.
-     */
-    virtual void clearViews();
+    virtual void removeView(View* view, bool free = true);
 
     /**
      * Removes all views from the Box. Them will be freed.

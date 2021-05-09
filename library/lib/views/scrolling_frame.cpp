@@ -101,7 +101,7 @@ void ScrollingFrame::addView(View* view)
     this->setContentView(view);
 }
 
-void ScrollingFrame::removeView(View* view, bool free, bool invalidate)
+void ScrollingFrame::removeView(View* view, bool free)
 {
     this->setContentView(nullptr);
 }
