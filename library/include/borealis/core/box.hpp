@@ -102,6 +102,11 @@ class Box : public View
     virtual void clearViews();
 
     /**
+     * Removes all views from the Box. Them will be freed.
+     */
+    virtual void clearViews();
+
+    /**
      * Sets the padding of the view, aka the internal space to give
      * between this view boundaries and its children.
      *

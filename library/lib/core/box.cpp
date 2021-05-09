@@ -232,6 +232,25 @@ void Box::clearViews()
     this->invalidate();
 }
 
+void Box::clearViews()
+{
+    std::vector<View*> views = getChildren();
+
+    for (size_t i = 0; i < views.size(); i++)
+    {
+        View* view = this->children.back();
+        
+        // Remove it
+        YGNodeRemoveChild(this->ygNode, view->getYGNode());
+        this->children.pop_back();
+        
+        view->willDisappear(true);
+        delete view;
+    }
+
+    this->invalidate();
+}
+
 void Box::onFocusGained()
 {
     View::onFocusGained();
