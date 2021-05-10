@@ -130,6 +130,7 @@ extern const NVGcolor transparent;
 
 class View;
 class Box;
+class AppletFrame;
 
 typedef Event<View*> GenericEvent;
 typedef Event<> VoidEvent;
@@ -246,6 +247,9 @@ class View
 
     std::unordered_map<FocusDirection, std::string> customFocusById;
     std::unordered_map<FocusDirection, View*> customFocusByPtr;
+    
+    std::string title;
+    std::string iconPath;
 
   protected:
     Animatable collapseState = 1.0f;
@@ -1331,6 +1335,36 @@ class View
      * path as it is otherwise.
      */
     static std::string getFilePathXMLAttributeValue(std::string value);
+    
+    void setTitle(std::string title)
+    {
+        this->title = title;
+    }
+    
+    std::string getTitle()
+    {
+        return this->title;
+    }
+
+    void setIconFromRes(std::string name)
+    {
+        iconPath = std::string(BRLS_RESOURCES) + name;
+    }
+    
+    void setIconFromFile(std::string path)
+    {
+        iconPath = path;
+    }
+    
+    std::string getIconFile()
+    {
+        return iconPath;
+    }
+    
+    AppletFrame* getAppletFrame();
+    
+    void present(View* view);
+    void dismiss();
 };
 
 } // namespace brls

@@ -108,19 +108,24 @@ AppletFrame::AppletFrame()
 {
     this->inflateFromXMLString(appletFrameXML);
 
-    this->registerStringXMLAttribute("title", [this](std::string value) {
-        this->setTitle(value);
-    });
-
-    this->registerFilePathXMLAttribute("icon", [this](std::string value) {
-        this->setIconFromFile(value);
-    });
-
     this->forwardXMLAttribute("iconInterpolation", this->icon, "interpolation");
 
-    Application::getGlobalFocusChangeEvent()->subscribe([this](View* view) {
+    hintSubscription = Application::getGlobalFocusChangeEvent()->subscribe([this](View* view) {
         refillHints(view);
     });
+    
+    this->registerAction("brls/hints/back"_i18n, BUTTON_B, [this](View* view) {
+        if (this->contentViewStack.size() > 1)
+            this->contentViewStack.back()->dismiss();
+        else
+            Application::quit();
+        return true;
+    });
+}
+
+AppletFrame::~AppletFrame()
+{
+    Application::getGlobalFocusChangeEvent()->unsubscribe(hintSubscription);
 }
 
 bool actionsSortFunc(Action a, Action b)
@@ -205,12 +210,33 @@ void AppletFrame::setTitle(std::string title)
     this->title->setText(title);
 }
 
+void AppletFrame::pushContentView(View *view)
+{
+    contentViewStack.push_back(view);
+    setContentView(view);
+    Application::giveFocus(view);
+}
+
+View* AppletFrame::popContentView()
+{
+    if (contentViewStack.size() <= 1) return nullptr;
+    
+    View* lastView = contentViewStack.back();
+    contentViewStack.pop_back();
+    
+    View* newView = contentViewStack.back();
+    setContentView(newView);
+    Application::giveFocus(newView);
+    
+    return lastView;
+}
+
 void AppletFrame::setContentView(View* view)
 {
     if (this->contentView)
     {
         // Remove the node
-        this->removeView(this->contentView);
+        this->removeView(this->contentView, false);
         this->contentView = nullptr;
     }
 
@@ -223,6 +249,12 @@ void AppletFrame::setContentView(View* view)
     this->contentView->setGrow(1.0f);
 
     this->addView(this->contentView, 1);
+    
+    this->setTitle(view->getTitle());
+    if (!view->getIconFile().empty())
+        this->setIconFromFile(view->getIconFile());
+    else
+        this->icon->setVisibility(Visibility::INVISIBLE);
 }
 
 void AppletFrame::handleXMLElement(tinyxml2::XMLElement* element)
@@ -231,7 +263,7 @@ void AppletFrame::handleXMLElement(tinyxml2::XMLElement* element)
         fatal("brls:AppletFrame can only have one child XML element");
 
     View* view = View::createFromXMLElement(element);
-    this->setContentView(view);
+    this->pushContentView(view);
 }
 
 View* AppletFrame::create()

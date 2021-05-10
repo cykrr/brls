@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
     brls::Application::createWindow("demo/title"_i18n);
 
     // Have the application register an action on every activity that will quit when you press BUTTON_START
-    brls::Application::setGlobalQuit(true);
+    brls::Application::setGlobalQuit(false);
 
     // Register custom views (including tabs, which are views)
     brls::Application::registerXMLView("CaptionedImage", CaptionedImage::create);

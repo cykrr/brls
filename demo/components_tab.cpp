@@ -15,6 +15,7 @@
 */
 
 #include "components_tab.hpp"
+#include "about_view.hpp"
 
 ComponentsTab::ComponentsTab()
 {
@@ -33,6 +34,7 @@ ComponentsTab::ComponentsTab()
 bool ComponentsTab::onPrimaryButtonClicked(brls::View* view)
 {
     brls::Logger::info("Clicked");
+    this->present(new AboutView());
     return true;
 }
 

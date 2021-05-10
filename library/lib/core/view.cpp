@@ -19,6 +19,7 @@
 #include <math.h>
 
 #include <algorithm>
+#include <borealis/views/applet_frame.hpp>
 #include <borealis/core/animation.hpp>
 #include <borealis/core/application.hpp>
 #include <borealis/core/box.hpp>
@@ -58,6 +59,14 @@ View::View()
     Style style = Application::getStyle();
 
     this->highlightCornerRadius = style["brls/highlight/corner_radius"];
+    
+    this->registerStringXMLAttribute("title", [this](std::string value) {
+        this->setTitle(value);
+    });
+
+    this->registerFilePathXMLAttribute("icon", [this](std::string value) {
+        this->setIconFromFile(value);
+    });
 }
 
 static int shakeAnimation(float t, float a) // a = amplitude
@@ -2093,6 +2102,35 @@ void View::setWireframeEnabled(bool wireframe)
 bool View::isWireframeEnabled()
 {
     return this->wireframeEnabled;
+}
+
+AppletFrame* View::getAppletFrame()
+{
+    View* view = this;
+    while (view) {
+        AppletFrame* applet = dynamic_cast<AppletFrame*>(view);
+        if (applet)
+            return applet;
+        
+        view = view->getParent();
+    }
+    return nullptr;
+}
+
+void View::present(View* view)
+{
+    AppletFrame* applet = getAppletFrame();
+    if (!applet) return;
+    
+    applet->pushContentView(view);
+}
+
+void View::dismiss()
+{
+    AppletFrame* applet = getAppletFrame();
+    if (!applet) return;
+    
+    delete applet->popContentView();
 }
 
 } // namespace brls

@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <borealis/core/event.hpp>
 #include <borealis/core/bind.hpp>
 #include <borealis/core/box.hpp>
 #include <borealis/views/image.hpp>
@@ -31,15 +32,12 @@ class AppletFrame : public Box
 {
   public:
     AppletFrame();
+    ~AppletFrame();
 
     void handleXMLElement(tinyxml2::XMLElement* element) override;
 
-    /**
-     * Sets the content view for that AppletFrame.
-     * Will be placed between header and footer and expanded with grow factor
-     * and width / height to AUTO.
-     */
-    void setContentView(View* view);
+    void pushContentView(View* view);
+    View* popContentView();
 
     void setTitle(std::string title);
 
@@ -49,6 +47,7 @@ class AppletFrame : public Box
     static View* create();
 
   private:
+    GenericEvent::Subscription hintSubscription;
     void refillHints(View* focusView);
 
     BRLS_BIND(Label, title, "brls/applet_frame/title_label");
@@ -56,7 +55,15 @@ class AppletFrame : public Box
     BRLS_BIND(Box, hints, "hints");
 
   protected:
+    std::vector<View*> contentViewStack;
     View* contentView = nullptr;
+    
+    /**
+     * Sets the content view for that AppletFrame.
+     * Will be placed between header and footer and expanded with grow factor
+     * and width / height to AUTO.
+     */
+    void setContentView(View* view);
 };
 
 } // namespace brls
