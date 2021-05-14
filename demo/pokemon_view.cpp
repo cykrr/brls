@@ -14,26 +14,31 @@
     limitations under the License.
 */
 
-#include "about_view.hpp"
+#include "pokemon_view.hpp"
+#include <borealis/core/i18n.hpp>
 
-AboutView::AboutView()
+using namespace brls::literals;
+
+PokemonView::PokemonView(Pokemon pokemon):
+    pokemon(pokemon)
 {
     // Inflate the tab from the XML file
-    this->inflateFromXMLRes("xml/views/about.xml");
+    this->inflateFromXMLRes("xml/views/pokemon.xml");
     
-    BRLS_REGISTER_CLICK_BY_ID("close_button", [this](brls::View* view) {
+    setTitle(pokemon.name);
+//    setIconFromRes("img/pokemon/thumbnails/" + pokemon.id + ".png");
+    image->setImageFromRes("img/pokemon/" + pokemon.id + ".png");
+    
+    description->setText("It's a pokemon with name: " + pokemon.name + "\nCollect them all to became a Shaman king!");
+    
+    this->getView("close_button")->registerAction("brls/hints/ok"_i18n, brls::BUTTON_A ,[this](brls::View* view) {
         this->dismiss();
         return true;
-    });
-    
-//    this->registerAction("HONK", brls::BUTTON_B, [this](brls::View* view) {
-////        this->dismiss();
-//        return true;
-//    }, false, brls::SOUND_HONK);
+    }, false, brls::SOUND_BACK);
 }
 
-brls::View* AboutView::create()
+brls::View* PokemonView::create()
 {
     // Called by the XML engine to create a new ComponentsTab
-    return new AboutView();
+    return new PokemonView();
 }

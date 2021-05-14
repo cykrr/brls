@@ -15,7 +15,7 @@
 */
 
 #include "components_tab.hpp"
-#include "about_view.hpp"
+#include "pokemon_view.hpp"
 
 ComponentsTab::ComponentsTab()
 {
@@ -33,8 +33,10 @@ ComponentsTab::ComponentsTab()
 
 bool ComponentsTab::onPrimaryButtonClicked(brls::View* view)
 {
+    brls::AppletFrame* frame = new brls::AppletFrame(PokemonView::create());
+    frame->setFooterVisibility(brls::Visibility::GONE);
+    brls::Application::pushActivity(new brls::Activity(frame));
     brls::Logger::info("Clicked");
-    this->present(new AboutView());
     return true;
 }
 

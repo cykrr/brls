@@ -18,10 +18,27 @@
 
 #include <borealis.hpp>
 
-class AboutView : public brls::Box
+class Pokemon
+{
+public:
+    std::string id;
+    std::string name;
+    
+    Pokemon(std::string id, std::string name):
+        id(id), name(name)
+    { }
+};
+
+class PokemonView : public brls::Box
 {
   public:
-    AboutView();
-
+    PokemonView(Pokemon pokemon);
+    PokemonView() : PokemonView(Pokemon("001", "ТУПА ПАКИМОН!!!")) { }
+    
     static brls::View* create();
+    
+  private:
+    Pokemon pokemon;
+    BRLS_BIND(brls::Image, image, "image");
+    BRLS_BIND(brls::Label, description, "description");
 };
