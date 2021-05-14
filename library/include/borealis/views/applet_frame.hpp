@@ -32,6 +32,7 @@ class AppletFrame : public Box
 {
   public:
     AppletFrame();
+    AppletFrame(View* contentView);
     ~AppletFrame();
 
     void handleXMLElement(tinyxml2::XMLElement* element) override;
@@ -43,6 +44,9 @@ class AppletFrame : public Box
 
     void setIconFromRes(std::string name);
     void setIconFromFile(std::string path);
+    
+    void setHeaderVisibility(Visibility visibility);
+    void setFooterVisibility(Visibility visibility);
 
     static View* create();
 
@@ -50,6 +54,8 @@ class AppletFrame : public Box
     GenericEvent::Subscription hintSubscription;
     void refillHints(View* focusView);
 
+    BRLS_BIND(Box, header, "brls/applet_frame/header");
+    BRLS_BIND(Box, footer, "brls/applet_frame/footer");
     BRLS_BIND(Label, title, "brls/applet_frame/title_label");
     BRLS_BIND(Image, icon, "brls/applet_frame/title_icon");
     BRLS_BIND(Box, hints, "hints");

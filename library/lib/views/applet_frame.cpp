@@ -37,6 +37,7 @@ const std::string appletFrameXML = R"xml(
 
         <!-- Header -->
         <brls:Box
+            id="brls/applet_frame/header"
             width="auto"
             height="@style/brls/applet_frame/header_height"
             axis="row"
@@ -73,6 +74,7 @@ const std::string appletFrameXML = R"xml(
             set to visibility="gone" without affecting the hint
         -->
         <brls:Box
+            id="brls/applet_frame/footer"
             width="auto"
             height="@style/brls/applet_frame/footer_height"
             axis="row"
@@ -109,18 +111,30 @@ AppletFrame::AppletFrame()
     this->inflateFromXMLString(appletFrameXML);
 
     this->forwardXMLAttribute("iconInterpolation", this->icon, "interpolation");
-
+    
+    this->registerBoolXMLAttribute("headerHidden", [this](bool value) {
+        this->setHeaderVisibility(value ? Visibility::GONE : Visibility::VISIBLE);
+    });
+    
+    this->registerBoolXMLAttribute("footerHidden", [this](bool value) {
+        this->setFooterVisibility(value ? Visibility::GONE : Visibility::VISIBLE);
+    });
+    
     hintSubscription = Application::getGlobalFocusChangeEvent()->subscribe([this](View* view) {
         refillHints(view);
     });
     
     this->registerAction("brls/hints/back"_i18n, BUTTON_B, [this](View* view) {
-        if (this->contentViewStack.size() > 1)
-            this->contentViewStack.back()->dismiss();
-        else
-            Application::quit();
+        this->contentViewStack.back()->dismiss();
         return true;
-    });
+    }, false, SOUND_BACK);
+}
+
+AppletFrame::AppletFrame(View* contentView) :
+    AppletFrame::AppletFrame()
+{
+    contentViewStack.push_back(contentView);
+    this->setContentView(contentView);
 }
 
 AppletFrame::~AppletFrame()
@@ -201,8 +215,24 @@ void AppletFrame::setIconFromRes(std::string name)
 
 void AppletFrame::setIconFromFile(std::string path)
 {
-    this->icon->setVisibility(Visibility::VISIBLE);
-    this->icon->setImageFromFile(path);
+    if (path.empty())
+    {
+        this->icon->setVisibility(Visibility::GONE);
+    }
+    else {
+        this->icon->setVisibility(Visibility::VISIBLE);
+        this->icon->setImageFromFile(path);
+    }
+}
+
+void AppletFrame::setHeaderVisibility(Visibility visibility)
+{
+    header->setVisibility(visibility);
+}
+
+void AppletFrame::setFooterVisibility(Visibility visibility)
+{
+    footer->setVisibility(visibility);
 }
 
 void AppletFrame::setTitle(std::string title)
@@ -219,7 +249,12 @@ void AppletFrame::pushContentView(View *view)
 
 View* AppletFrame::popContentView()
 {
-    if (contentViewStack.size() <= 1) return nullptr;
+    if (contentViewStack.size() <= 1)
+    {
+        if (!Application::popActivity())
+            Application::quit();
+        return nullptr;
+    }
     
     View* lastView = contentViewStack.back();
     contentViewStack.pop_back();
@@ -251,10 +286,7 @@ void AppletFrame::setContentView(View* view)
     this->addView(this->contentView, 1);
     
     this->setTitle(view->getTitle());
-    if (!view->getIconFile().empty())
-        this->setIconFromFile(view->getIconFile());
-    else
-        this->icon->setVisibility(Visibility::INVISIBLE);
+    this->setIconFromFile(view->getIconFile());
 }
 
 void AppletFrame::handleXMLElement(tinyxml2::XMLElement* element)
@@ -263,7 +295,8 @@ void AppletFrame::handleXMLElement(tinyxml2::XMLElement* element)
         fatal("brls:AppletFrame can only have one child XML element");
 
     View* view = View::createFromXMLElement(element);
-    this->pushContentView(view);
+    contentViewStack.push_back(view);
+    this->setContentView(view);
 }
 
 View* AppletFrame::create()
