@@ -368,8 +368,11 @@ void View::drawWireframe(FrameContext* ctx, Rect frame)
 
 void View::drawBorder(NVGcontext* vg, FrameContext* ctx, Style style, Rect frame)
 {
+    NVGcolor color = this->borderColor;
+    color.a *= getAlpha();
+    
     nvgBeginPath(vg);
-    nvgStrokeColor(vg, this->borderColor);
+    nvgStrokeColor(vg, color);
     nvgStrokeWidth(vg, this->borderThickness);
     nvgRoundedRect(vg, frame.getMinX(), frame.getMinY(), frame.getWidth(), frame.getHeight(), this->cornerRadius);
     nvgStroke(vg);
