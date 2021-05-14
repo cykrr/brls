@@ -661,14 +661,13 @@ void Application::pushActivity(Activity* activity, TransitionAnimation animation
                 true, activity->getShowAnimationDuration(animation));
         }
 
-        last->hide([animation, wait] {
-            Activity* newLast = Application::activitiesStack[Application::activitiesStack.size() - 1];
-            newLast->setInFadeAnimation(false);
+        last->hide([animation, wait, activity] {
+            activity->setInFadeAnimation(false);
 
             // Animate the new activity once the old one
             // has ended its animation
             if (wait)
-                newLast->show([] { Application::unblockInputs(); }, true, newLast->getShowAnimationDuration(animation));
+                activity->show([] { Application::unblockInputs(); }, true, activity->getShowAnimationDuration(animation));
         },
             true, last->getShowAnimationDuration(animation));
     }
@@ -678,7 +677,7 @@ void Application::pushActivity(Activity* activity, TransitionAnimation animation
     if (!fadeOut)
         activity->show([] { Application::unblockInputs(); }, true, activity->getShowAnimationDuration(animation));
     else
-        activity->setAlpha(0.0f);
+        activity->hide([] {}, false, NULL);
 
     // Focus
     if (Application::activitiesStack.size() > 0 && Application::currentFocus != nullptr)
