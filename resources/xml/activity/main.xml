@@ -18,7 +18,7 @@
             <brls:View xml="@res/xml/tabs/layout.xml" />
         </brls:Tab>
 
-        <brls:Tab label="@i18n/demo/tabs/recycling">
+        <brls:Tab label="@i18n/demo/tabs/pokedex">
             <RecyclingListTab />
         </brls:Tab>
 
