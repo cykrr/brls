@@ -25,7 +25,7 @@ namespace brls
 
 static StyleValues styleValues = {
     // Animations
-    { "brls/animations/show", 250.0f },
+    { "brls/animations/show", 200.0f },
     { "brls/animations/show_slide", 125.0f },
 
     { "brls/animations/highlight", 100.0f },

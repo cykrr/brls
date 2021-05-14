@@ -94,8 +94,10 @@ class Application
     /**
       * Pops the last pushed activity from the stack
       * and gives focus back where it was before.
+      *
+      * return false if no actifity to pop.
       */
-    static void popActivity(
+    static bool popActivity(
         TransitionAnimation animation = TransitionAnimation::FADE, std::function<void(void)> cb = [] {});
 
     /**

@@ -27,6 +27,11 @@ Activity::Activity()
 {
 }
 
+Activity::Activity(View* view):
+    constructorView(view)
+{
+}
+
 void Activity::setContentView(View* view)
 {
     if (this->contentView)
@@ -51,7 +56,7 @@ void Activity::resizeToFitWindow()
 
 View* Activity::createContentView()
 {
-    return nullptr;
+    return constructorView;
 }
 
 float Activity::getShowAnimationDuration(TransitionAnimation animation)

@@ -338,6 +338,7 @@ void Application::onControllerButtonPressed(enum ControllerButton button, bool r
     if (Application::blockInputsTokens != 0)
     {
         Logger::debug("{} button press blocked (tokens={})", button, Application::blockInputsTokens);
+        Application::getAudioPlayer()->play(Sound::SOUND_CLICK_ERROR);
         return;
     }
 
@@ -357,19 +358,22 @@ void Application::onControllerButtonPressed(enum ControllerButton button, bool r
     {
         case BUTTON_DOWN:
             Application::navigate(FocusDirection::DOWN);
-            break;
+            return;
         case BUTTON_UP:
             Application::navigate(FocusDirection::UP);
-            break;
+            return;
         case BUTTON_LEFT:
             Application::navigate(FocusDirection::LEFT);
-            break;
+            return;
         case BUTTON_RIGHT:
             Application::navigate(FocusDirection::RIGHT);
-            break;
+            return;
         default:
             break;
     }
+    
+    // Only play the error sound if no action applied
+    Application::getAudioPlayer()->play(SOUND_CLICK_ERROR);
 }
 
 bool Application::setInputType(InputType type)
@@ -395,6 +399,12 @@ bool Application::handleAction(char button)
     // Dismiss if input type was changed
     if (button == BUTTON_A && setInputType(InputType::GAMEPAD))
         return false;
+    
+    if (button == BUTTON_B && setInputType(InputType::GAMEPAD))
+    {
+        activitiesStack.back()->getContentView()->dismiss();
+        return true;
+    }
 
     if (Application::activitiesStack.empty())
         return false;
@@ -431,10 +441,6 @@ bool Application::handleAction(char button)
 
         hintParent = hintParent->getParent();
     }
-
-    // Only play the error sound if action is a click
-    if (button == BUTTON_A && consumedButtons.empty())
-        Application::getAudioPlayer()->play(SOUND_CLICK_ERROR);
 
     return !consumedButtons.empty();
 }
@@ -563,10 +569,10 @@ void Application::giveFocus(View* view)
     }
 }
 
-void Application::popActivity(TransitionAnimation animation, std::function<void(void)> cb)
+bool Application::popActivity(TransitionAnimation animation, std::function<void(void)> cb)
 {
     if (Application::activitiesStack.size() <= 1) // never pop the first activity
-        return;
+        return false;
 
     Application::blockInputs();
 
@@ -592,15 +598,20 @@ void Application::popActivity(TransitionAnimation animation, std::function<void(
             if (newLast->isHidden())
             {
                 newLast->willAppear(false);
-                newLast->show(cb, true, newLast->getShowAnimationDuration(animation));
+                newLast->show([cb]{
+                    cb();
+                    Application::unblockInputs();
+                }, true, newLast->getShowAnimationDuration(animation));
             }
             else
             {
                 cb();
+                Application::unblockInputs();
             }
         }
-
-        Application::unblockInputs();
+        else {
+            Application::unblockInputs();
+        }
     },
         true, last->getShowAnimationDuration(animation));
 
@@ -622,6 +633,7 @@ void Application::popActivity(TransitionAnimation animation, std::function<void(
         Application::giveFocus(newFocus);
         Application::focusStack.pop_back();
     }
+    return true;
 }
 
 void Application::pushActivity(Activity* activity, TransitionAnimation animation)

@@ -77,7 +77,7 @@ void TabFrame::addTab(std::string label, TabViewCreator creator)
         newContent->registerAction("brls/hints/back"_i18n, BUTTON_B, [this](View* view) {
             Application::giveFocus(this->sidebar);
             return true;
-        });
+        }, false, SOUND_BACK);
     });
 }
 
