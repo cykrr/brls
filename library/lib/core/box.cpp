@@ -643,4 +643,13 @@ View* Padding::create()
     return new Padding();
 }
 
+
+Box::~Box()
+{
+    for (auto it : getChildren())
+    {
+        delete it;
+    }
+}
+
 } // namespace brls

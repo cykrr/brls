@@ -1336,10 +1336,7 @@ class View
      */
     static std::string getFilePathXMLAttributeValue(std::string value);
     
-    void setTitle(std::string title)
-    {
-        this->title = title;
-    }
+    void setTitle(std::string title);
     
     std::string getTitle()
     {
@@ -1361,7 +1358,7 @@ class View
         return iconPath;
     }
     
-    AppletFrame* getAppletFrame();
+    virtual AppletFrame* getAppletFrame();
     
     void present(View* view);
     void dismiss();

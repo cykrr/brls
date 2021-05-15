@@ -75,12 +75,12 @@ void Ticking::stop(bool finished)
             break;
         }
     }
-
+    
     this->running = false;
+    
+    this->onStop();
 
     this->endCallback(finished);
-
-    this->onStop();
 }
 
 void Ticking::setEndCallback(TickingEndCallback endCallback)

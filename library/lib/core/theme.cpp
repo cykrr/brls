@@ -63,6 +63,10 @@ static ThemeValues lightThemeValues = {
 
     { "brls/button/enabled_border_color", nvgRGB(45, 45, 45) },
     { "brls/button/disabled_border_color", nvgRGB(45, 45, 45) },
+    
+    // List
+    { "brls/list/listItemValueColor", nvgRGB(43, 81, 226) },
+    
 };
 
 static ThemeValues darkThemeValues = {
@@ -106,6 +110,9 @@ static ThemeValues darkThemeValues = {
 
     { "brls/button/enabled_border_color", nvgRGB(255, 255, 255) },
     { "brls/button/disabled_border_color", nvgRGB(255, 255, 255) },
+    
+    // List
+    { "brls/list/listItemValueColor", nvgRGB(88, 195, 169) },
 };
 
 static Theme lightTheme(&lightThemeValues);

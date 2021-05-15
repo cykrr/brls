@@ -101,6 +101,16 @@ static StyleValues styleValues = {
     { "brls/shadow/feather", 10.0f },
     { "brls/shadow/opacity", 63.75f },
     { "brls/shadow/offset", 10.0f },
+    
+    // Dropdown
+    { "brls/dropdown/listPadding" , 40.0f },
+    { "brls/dropdown/listItemHeight" , 60.0f },
+    { "brls/dropdown/listItemTextSize" , 20.0f },
+    
+    // ListItem
+    { "brls/listitem/descriptionIndent", 16.0f },
+    { "brls/listitem/indent", 40.0f },
+    { "brls/listitem/selectRadius", 15.0f },
 };
 
 static Style style(&styleValues);

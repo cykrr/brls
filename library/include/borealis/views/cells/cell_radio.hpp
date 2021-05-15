@@ -19,23 +19,32 @@
 #include <borealis/core/application.hpp>
 #include <borealis/core/bind.hpp>
 #include <borealis/core/box.hpp>
-#include <borealis/views/image.hpp>
-#include <borealis/views/label.hpp>
+#include <borealis/views/recycler.hpp>
 
 namespace brls
 {
 
-class Hint : public Box
+class CheckBox: public View
 {
-  public:
-    Hint(Action action);
+public:
+    CheckBox();
+    virtual void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override;
+    
+    static View* create();
+};
 
-  private:
-    std::string getKeyIcon(ControllerButton button);
-    Action action;
-
-    BRLS_BIND(Label, icon, "icon");
-    BRLS_BIND(Label, hint, "hint");
+class RadioCell: public RecyclerCell
+{
+public:
+    RadioCell();
+    
+    void setSelected(bool selected);
+    bool getSelected();
+    
+    BRLS_BIND(Label, title, "brls/rediocell/title");
+    BRLS_BIND(CheckBox, checkbox, "brls/rediocell/checkbox");
+private:
+    bool selected = false;
 };
 
 } // namespace brls

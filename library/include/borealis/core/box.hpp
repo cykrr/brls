@@ -63,6 +63,7 @@ class Box : public View
   public:
     Box(Axis flexDirection);
     Box();
+    ~Box();
 
     void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override;
     View* getDefaultFocus() override;

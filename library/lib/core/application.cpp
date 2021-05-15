@@ -34,6 +34,7 @@
 #include <borealis/views/recycler.hpp>
 #include <borealis/views/sidebar.hpp>
 #include <borealis/views/tab_frame.hpp>
+#include <borealis/views/cells/cell_radio.hpp>
 #include <stdexcept>
 #include <string>
 
@@ -438,7 +439,7 @@ bool Application::handleAction(char button)
                 }
             }
         }
-
+        
         hintParent = hintParent->getParent();
     }
 
@@ -587,7 +588,6 @@ bool Application::popActivity(TransitionAnimation animation, std::function<void(
     last->hide([last, animation, wait, cb] {
         last->setInFadeAnimation(false);
         Application::activitiesStack.pop_back();
-        delete last;
 
         // Animate the old activity once the new one
         // has ended its animation
@@ -612,6 +612,8 @@ bool Application::popActivity(TransitionAnimation animation, std::function<void(
         else {
             Application::unblockInputs();
         }
+        
+        delete last;
     },
         true, last->getShowAnimationDuration(animation));
 
@@ -867,6 +869,7 @@ void Application::registerBuiltInXMLViews()
     Application::registerXMLView("brls:Image", Image::create);
     Application::registerXMLView("brls:Padding", Padding::create);
     Application::registerXMLView("brls:Button", Button::create);
+    Application::registerXMLView("brls:CheckBox", CheckBox::create);
 }
 
 void Application::registerXMLView(std::string name, XMLViewCreator creator)

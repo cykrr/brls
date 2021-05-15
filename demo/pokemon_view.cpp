@@ -33,7 +33,7 @@ PokemonView::PokemonView(Pokemon pokemon):
     
     this->getView("close_button")->registerAction("brls/hints/ok"_i18n, brls::BUTTON_A ,[this](brls::View* view) {
         this->dismiss();
-        return true;
+        return false;
     }, false, brls::SOUND_BACK);
 }
 

@@ -33,9 +33,14 @@ ComponentsTab::ComponentsTab()
 
 bool ComponentsTab::onPrimaryButtonClicked(brls::View* view)
 {
-    brls::AppletFrame* frame = new brls::AppletFrame(PokemonView::create());
-    frame->setFooterVisibility(brls::Visibility::GONE);
-    brls::Application::pushActivity(new brls::Activity(frame));
+//    brls::AppletFrame* frame = new brls::AppletFrame(PokemonView::create());
+//    frame->setFooterVisibility(brls::Visibility::GONE);
+//    brls::Application::pushActivity(new brls::Activity(frame));
+    
+    brls::Dropdown* dropdown = new brls::Dropdown("Test", std::vector<std::string> { "Test1", "Test2", "Test3" }, [](int selected){
+        
+    });
+    brls::Application::pushActivity(new brls::Activity(dropdown));
     brls::Logger::info("Clicked");
     return true;
 }

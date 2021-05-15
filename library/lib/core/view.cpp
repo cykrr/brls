@@ -368,11 +368,8 @@ void View::drawWireframe(FrameContext* ctx, Rect frame)
 
 void View::drawBorder(NVGcontext* vg, FrameContext* ctx, Style style, Rect frame)
 {
-    NVGcolor color = this->borderColor;
-    color.a *= getAlpha();
-    
     nvgBeginPath(vg);
-    nvgStrokeColor(vg, color);
+    nvgStrokeColor(vg, a(this->borderColor));
     nvgStrokeWidth(vg, this->borderThickness);
     nvgRoundedRect(vg, frame.getMinX(), frame.getMinY(), frame.getWidth(), frame.getHeight(), this->cornerRadius);
     nvgStroke(vg);
@@ -1307,6 +1304,11 @@ View::~View()
 
     for (GestureRecognizer* recognizer : this->gestureRecognizers)
         delete recognizer;
+    
+    alpha.stop();
+    clickAlpha.stop();
+    highlightAlpha.stop();
+    collapseState.stop();
 }
 
 std::string View::getStringXMLAttributeValue(std::string value)
@@ -1550,6 +1552,14 @@ bool View::applyXMLAttribute(std::string name, std::string value)
     {
         return false;
     }
+}
+
+void View::setTitle(std::string title){
+    this->title = title;
+    
+    AppletFrame* appletFrame = this->getAppletFrame();
+    if (appletFrame)
+        appletFrame->setTitle(title);
 }
 
 void View::applyXMLAttributes(tinyxml2::XMLElement* element)
@@ -2133,7 +2143,7 @@ void View::dismiss()
     AppletFrame* applet = getAppletFrame();
     if (!applet) return;
     
-    delete applet->popContentView();
+    applet->popContentView();
 }
 
 } // namespace brls

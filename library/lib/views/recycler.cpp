@@ -24,6 +24,8 @@ namespace brls
 RecyclerCell::RecyclerCell()
 {
     this->setLineBottom(1);
+    this->setLineColor(Application::getTheme()["brls/sidebar/separator"]);
+    
     this->registerClickAction([this](View* view) {
         RecyclerFrame* recycler = dynamic_cast<RecyclerFrame*>(getParent()->getParent());
         if (recycler)
@@ -37,6 +39,29 @@ RecyclerCell::RecyclerCell()
 RecyclerCell* RecyclerCell::create()
 {
     return new RecyclerCell();
+}
+
+void RecyclerCell::setIndexPath(IndexPath value)
+{
+    indexPath = value;
+    
+    this->setLineTop(value.row == 0 ? 1 : 0);
+}
+
+void RecyclerCell::onFocusGained()
+{
+    // Called when a child of ours gets focused, in that case it's the Image
+
+    Box::onFocusGained();
+    this->setLineColor(TRANSPARENT);
+}
+
+void RecyclerCell::onFocusLost()
+{
+    // Called when a child of ours losts focused, in that case it's the Image
+
+    Box::onFocusLost();
+    this->setLineColor(Application::getTheme()["brls/sidebar/separator"]);
 }
 
 RecyclerHeader::RecyclerHeader()
@@ -161,8 +186,8 @@ RecyclerFrame::RecyclerFrame()
 
 RecyclerFrame::~RecyclerFrame()
 {
-    if (this->dataSource)
-        delete dataSource;
+//    if (this->dataSource)
+//        delete dataSource;
 
     for (auto it : queueMap)
         delete it.second;
@@ -368,7 +393,10 @@ void RecyclerFrame::addCellAt(int index, int downSide)
     if (indexPath.row == -1)
         cell = dataSource->cellForHeader(this, indexPath.section);
     else
+    {
         cell = dataSource->cellForRow(this, indexPath);
+        cell->setLineBottom(1);
+    }
 
     cell->setWidth(renderedFrame.getWidth() - paddingLeft - paddingRight);
     Point cellOrigin = Point(renderedFrame.getMinX() + paddingLeft, 

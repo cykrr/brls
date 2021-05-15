@@ -60,7 +60,7 @@ class RecyclerCell : public Box
     /*
      * DO NOT USE! FOR INTERNAL USAGE ONLY!
      */
-    void setIndexPath(IndexPath value) { indexPath = value; }
+    void setIndexPath(IndexPath value);
 
     /*
      * A string used to identify a cell that is reusable.
@@ -73,6 +73,9 @@ class RecyclerCell : public Box
     virtual void prepareForReuse() { }
 
     static RecyclerCell* create();
+    
+    void onFocusGained() override;
+    void onFocusLost() override;
 
   private:
     IndexPath indexPath;

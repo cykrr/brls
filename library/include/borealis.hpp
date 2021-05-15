@@ -54,6 +54,7 @@
 #include <borealis/views/scrolling_frame.hpp>
 #include <borealis/views/sidebar.hpp>
 #include <borealis/views/tab_frame.hpp>
+#include <borealis/views/dropdown.hpp>
 
 // Gestures
 #include <borealis/core/touch/pan_gesture.hpp>

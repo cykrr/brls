@@ -247,13 +247,13 @@ void AppletFrame::pushContentView(View *view)
     Application::giveFocus(view);
 }
 
-View* AppletFrame::popContentView()
+void AppletFrame::popContentView()
 {
     if (contentViewStack.size() <= 1)
     {
         if (!Application::popActivity())
             Application::quit();
-        return nullptr;
+        return;
     }
     
     View* lastView = contentViewStack.back();
@@ -263,7 +263,7 @@ View* AppletFrame::popContentView()
     setContentView(newView);
     Application::giveFocus(newView);
     
-    return lastView;
+//    delete lastView;
 }
 
 void AppletFrame::setContentView(View* view)
