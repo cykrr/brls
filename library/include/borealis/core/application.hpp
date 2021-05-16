@@ -199,6 +199,8 @@ class Application
      * Returns the current system locale.
      */
     static std::string getLocale();
+    
+    static void addToFreeQueue(View* view);
 
     /**
      * Returns the current input type.
@@ -220,6 +222,7 @@ class Application
 
     inline static std::vector<Activity*> activitiesStack;
     inline static std::vector<View*> focusStack;
+    inline static std::vector<View*> deletionPool;
 
     inline static unsigned windowWidth, windowHeight;
 

@@ -2146,4 +2146,9 @@ void View::dismiss()
     applet->popContentView();
 }
 
+void View::freeView()
+{
+    Application::addToFreeQueue(this);
+}
+
 } // namespace brls

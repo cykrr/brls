@@ -1362,6 +1362,8 @@ class View
     
     void present(View* view);
     void dismiss();
+    
+    void freeView();
 };
 
 } // namespace brls

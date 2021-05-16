@@ -252,6 +252,12 @@ bool Application::mainLoop()
 
     // Render
     Application::frame();
+    
+    // Free views deletion pool
+    for (auto view : Application::deletionPool)
+        delete view;
+    
+    Application::deletionPool.clear();
 
     return true;
 }
@@ -735,6 +741,11 @@ ThemeVariant Application::getThemeVariant()
 std::string Application::getLocale()
 {
     return Application::getPlatform()->getLocale();
+}
+
+void Application::addToFreeQueue(View* view)
+{
+    deletionPool.push_back(view);
 }
 
 bool Application::loadFontFromFile(std::string fontName, std::string filePath)

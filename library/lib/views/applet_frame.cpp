@@ -263,7 +263,7 @@ void AppletFrame::popContentView()
     setContentView(newView);
     Application::giveFocus(newView);
     
-//    delete lastView;
+    lastView->freeView();
 }
 
 void AppletFrame::setContentView(View* view)

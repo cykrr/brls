@@ -175,7 +175,7 @@ Activity::~Activity()
     {
         this->contentView->willDisappear();
 
-        delete this->contentView;
+        this->contentView->freeView();
         this->contentView = nullptr;
     }
 }
