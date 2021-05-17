@@ -27,8 +27,8 @@ Activity::Activity()
 {
 }
 
-Activity::Activity(View* view):
-    constructorView(view)
+Activity::Activity(View* view)
+    : constructorView(view)
 {
 }
 
@@ -61,12 +61,7 @@ View* Activity::createContentView()
 
 float Activity::getShowAnimationDuration(TransitionAnimation animation)
 {
-    Style style = Application::getStyle();
-
-    if (animation == TransitionAnimation::SLIDE_LEFT || animation == TransitionAnimation::SLIDE_RIGHT)
-        return style["brls/animations/show_slide"];
-
-    return style["brls/animations/show"];
+    return contentView->getShowAnimationDuration(animation);
 }
 
 void Activity::onWindowSizeChanged()

@@ -247,7 +247,7 @@ class View
 
     std::unordered_map<FocusDirection, std::string> customFocusById;
     std::unordered_map<FocusDirection, View*> customFocusByPtr;
-    
+
     std::string title;
     std::string iconPath;
 
@@ -310,6 +310,11 @@ class View
     Rect getFrame();
     float getX();
     float getY();
+
+    Rect getLocalFrame();
+    float getLocalX();
+    float getLocalY();
+
     float getWidth();
     float getHeight(bool includeCollapse = true);
 
@@ -1335,9 +1340,9 @@ class View
      * path as it is otherwise.
      */
     static std::string getFilePathXMLAttributeValue(std::string value);
-    
+
     void setTitle(std::string title);
-    
+
     std::string getTitle()
     {
         return this->title;
@@ -1347,22 +1352,22 @@ class View
     {
         iconPath = std::string(BRLS_RESOURCES) + name;
     }
-    
+
     void setIconFromFile(std::string path)
     {
         iconPath = path;
     }
-    
+
     std::string getIconFile()
     {
         return iconPath;
     }
-    
+
     virtual AppletFrame* getAppletFrame();
-    
+
     void present(View* view);
     void dismiss();
-    
+
     void freeView();
 };
 

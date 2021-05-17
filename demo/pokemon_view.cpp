@@ -15,26 +15,29 @@
 */
 
 #include "pokemon_view.hpp"
+
 #include <borealis/core/i18n.hpp>
 
 using namespace brls::literals;
 
-PokemonView::PokemonView(Pokemon pokemon):
-    pokemon(pokemon)
+PokemonView::PokemonView(Pokemon pokemon)
+    : pokemon(pokemon)
 {
     // Inflate the tab from the XML file
     this->inflateFromXMLRes("xml/views/pokemon.xml");
-    
+
     setTitle(pokemon.name);
-//    setIconFromRes("img/pokemon/thumbnails/" + pokemon.id + ".png");
+    //    setIconFromRes("img/pokemon/thumbnails/" + pokemon.id + ".png");
     image->setImageFromRes("img/pokemon/" + pokemon.id + ".png");
-    
+
     description->setText("It's a pokemon with name: " + pokemon.name + "\nCollect them all to became a Shaman king!");
-    
-    this->getView("close_button")->registerAction("brls/hints/ok"_i18n, brls::BUTTON_A ,[this](brls::View* view) {
-        this->dismiss();
-        return false;
-    }, false, brls::SOUND_BACK);
+
+    this->getView("close_button")->registerAction(
+        "brls/hints/ok"_i18n, brls::BUTTON_A, [this](brls::View* view) {
+            this->dismiss();
+            return true;
+        },
+        false, brls::SOUND_BACK);
 }
 
 brls::View* PokemonView::create()

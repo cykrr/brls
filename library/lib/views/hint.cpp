@@ -16,8 +16,8 @@
 
 #include <borealis/core/application.hpp>
 #include <borealis/core/logger.hpp>
-#include <borealis/core/util.hpp>
 #include <borealis/core/touch/tap_gesture.hpp>
+#include <borealis/core/util.hpp>
 #include <borealis/views/applet_frame.hpp>
 #include <borealis/views/hint.hpp>
 
@@ -47,7 +47,8 @@ const std::string hintXML = R"xml(
 )xml";
 
 Hint::Hint(Action action)
-    : Box(Axis::ROW), action(action)
+    : Box(Axis::ROW)
+    , action(action)
 {
     this->inflateFromXMLString(hintXML);
     this->setFocusable(false);

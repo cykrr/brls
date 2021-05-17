@@ -1,5 +1,6 @@
 <brls:AppletFrame
-    iconInterpolation="linear">
+    iconInterpolation="linear"
+    footerHidden="false">
     <brls:TabFrame
         title="@i18n/demo/title"
         icon="@res/img/borealis_96.png">

@@ -111,27 +111,37 @@ AppletFrame::AppletFrame()
     this->inflateFromXMLString(appletFrameXML);
 
     this->forwardXMLAttribute("iconInterpolation", this->icon, "interpolation");
-    
+
+    BRLS_REGISTER_ENUM_XML_ATTRIBUTE(
+        "style", HeaderStyle, this->setHeaderStyle,
+        {
+            { "regular", HeaderStyle::REGULAR },
+            { "dropdown", HeaderStyle::DROPDOWN },
+            { "popup", HeaderStyle::POPUP },
+        });
+
     this->registerBoolXMLAttribute("headerHidden", [this](bool value) {
         this->setHeaderVisibility(value ? Visibility::GONE : Visibility::VISIBLE);
     });
-    
+
     this->registerBoolXMLAttribute("footerHidden", [this](bool value) {
         this->setFooterVisibility(value ? Visibility::GONE : Visibility::VISIBLE);
     });
-    
+
     hintSubscription = Application::getGlobalFocusChangeEvent()->subscribe([this](View* view) {
         refillHints(view);
     });
-    
-    this->registerAction("brls/hints/back"_i18n, BUTTON_B, [this](View* view) {
-        this->contentViewStack.back()->dismiss();
-        return true;
-    }, false, SOUND_BACK);
+
+    this->registerAction(
+        "brls/hints/back"_i18n, BUTTON_B, [this](View* view) {
+            this->contentViewStack.back()->dismiss();
+            return true;
+        },
+        false, SOUND_BACK);
 }
 
-AppletFrame::AppletFrame(View* contentView) :
-    AppletFrame::AppletFrame()
+AppletFrame::AppletFrame(View* contentView)
+    : AppletFrame::AppletFrame()
 {
     contentViewStack.push_back(contentView);
     this->setContentView(contentView);
@@ -219,7 +229,8 @@ void AppletFrame::setIconFromFile(std::string path)
     {
         this->icon->setVisibility(Visibility::GONE);
     }
-    else {
+    else
+    {
         this->icon->setVisibility(Visibility::VISIBLE);
         this->icon->setImageFromFile(path);
     }
@@ -240,7 +251,7 @@ void AppletFrame::setTitle(std::string title)
     this->title->setText(title);
 }
 
-void AppletFrame::pushContentView(View *view)
+void AppletFrame::pushContentView(View* view)
 {
     contentViewStack.push_back(view);
     setContentView(view);
@@ -255,14 +266,14 @@ void AppletFrame::popContentView()
             Application::quit();
         return;
     }
-    
+
     View* lastView = contentViewStack.back();
     contentViewStack.pop_back();
-    
+
     View* newView = contentViewStack.back();
     setContentView(newView);
     Application::giveFocus(newView);
-    
+
     lastView->freeView();
 }
 
@@ -284,7 +295,7 @@ void AppletFrame::setContentView(View* view)
     this->contentView->setGrow(1.0f);
 
     this->addView(this->contentView, 1);
-    
+
     this->setTitle(view->getTitle());
     this->setIconFromFile(view->getIconFile());
 }
@@ -297,6 +308,26 @@ void AppletFrame::handleXMLElement(tinyxml2::XMLElement* element)
     View* view = View::createFromXMLElement(element);
     contentViewStack.push_back(view);
     this->setContentView(view);
+}
+
+void AppletFrame::setHeaderStyle(HeaderStyle style)
+{
+    this->style = style;
+
+    Style appStyle = Application::getStyle();
+    switch (style)
+    {
+        case HeaderStyle::REGULAR:
+            header->setHeight(appStyle["brls/applet_frame/header_height"]);
+            title->setFontSize(appStyle["brls/applet_frame/header_title_font_size"]);
+            break;
+        case HeaderStyle::DROPDOWN:
+            header->setHeight(appStyle["brls/applet_frame/dropdown_header_height"]);
+            title->setFontSize(appStyle["brls/applet_frame/dropdown_header_title_font_size"]);
+            break;
+        default:
+            break;
+    }
 }
 
 View* AppletFrame::create()

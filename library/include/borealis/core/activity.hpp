@@ -158,7 +158,7 @@ class Activity
 
   private:
     View* constructorView = nullptr;
-    View* contentView = nullptr;
+    View* contentView     = nullptr;
 };
 
 } // namespace brls

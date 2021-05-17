@@ -19,7 +19,6 @@
 #include <math.h>
 
 #include <algorithm>
-#include <borealis/views/applet_frame.hpp>
 #include <borealis/core/animation.hpp>
 #include <borealis/core/application.hpp>
 #include <borealis/core/box.hpp>
@@ -27,6 +26,7 @@
 #include <borealis/core/input.hpp>
 #include <borealis/core/util.hpp>
 #include <borealis/core/view.hpp>
+#include <borealis/views/applet_frame.hpp>
 
 using namespace brls::literals;
 
@@ -59,7 +59,7 @@ View::View()
     Style style = Application::getStyle();
 
     this->highlightCornerRadius = style["brls/highlight/corner_radius"];
-    
+
     this->registerStringXMLAttribute("title", [this](std::string value) {
         this->setTitle(value);
     });
@@ -1071,6 +1071,21 @@ float View::getY()
     return YGNodeLayoutGetTop(this->ygNode) + this->translation.y;
 }
 
+Rect View::getLocalFrame()
+{
+    return Rect(getLocalX(), getLocalY(), getWidth(), getHeight());
+}
+
+float View::getLocalX()
+{
+    return YGNodeLayoutGetLeft(this->ygNode) + this->translation.x + (isDetached() ? this->detachedOrigin.x : 0);
+}
+
+float View::getLocalY()
+{
+    return YGNodeLayoutGetTop(this->ygNode) + this->translation.y + (isDetached() ? this->detachedOrigin.y : 0);
+}
+
 float View::getHeight(bool includeCollapse)
 {
     return YGNodeLayoutGetHeight(this->ygNode) * (includeCollapse ? this->collapseState.getValue() : 1.0f);
@@ -1304,7 +1319,7 @@ View::~View()
 
     for (GestureRecognizer* recognizer : this->gestureRecognizers)
         delete recognizer;
-    
+
     alpha.stop();
     clickAlpha.stop();
     highlightAlpha.stop();
@@ -1554,9 +1569,10 @@ bool View::applyXMLAttribute(std::string name, std::string value)
     }
 }
 
-void View::setTitle(std::string title){
+void View::setTitle(std::string title)
+{
     this->title = title;
-    
+
     AppletFrame* appletFrame = this->getAppletFrame();
     if (appletFrame)
         appletFrame->setTitle(title);
@@ -2120,11 +2136,12 @@ bool View::isWireframeEnabled()
 AppletFrame* View::getAppletFrame()
 {
     View* view = this;
-    while (view) {
+    while (view)
+    {
         AppletFrame* applet = dynamic_cast<AppletFrame*>(view);
         if (applet)
             return applet;
-        
+
         view = view->getParent();
     }
     return nullptr;
@@ -2133,16 +2150,18 @@ AppletFrame* View::getAppletFrame()
 void View::present(View* view)
 {
     AppletFrame* applet = getAppletFrame();
-    if (!applet) return;
-    
+    if (!applet)
+        return;
+
     applet->pushContentView(view);
 }
 
 void View::dismiss()
 {
     AppletFrame* applet = getAppletFrame();
-    if (!applet) return;
-    
+    if (!applet)
+        return;
+
     applet->popContentView();
 }
 

@@ -16,10 +16,10 @@
     limitations under the License.
 */
 
+#include <borealis/core/application.hpp>
+#include <borealis/core/i18n.hpp>
 #include <borealis/core/logger.hpp>
 #include <borealis/core/util.hpp>
-#include <borealis/core/i18n.hpp>
-#include <borealis/core/application.hpp>
 #include <borealis/views/tab_frame.hpp>
 
 using namespace brls::literals;
@@ -73,11 +73,13 @@ void TabFrame::addTab(std::string label, TabViewCreator creator)
         this->addView(newContent); // addView calls willAppear
 
         this->activeTab = newContent;
-        
-        newContent->registerAction("brls/hints/back"_i18n, BUTTON_B, [this](View* view) {
-            Application::giveFocus(this->sidebar);
-            return true;
-        }, false, SOUND_BACK);
+
+        newContent->registerAction(
+            "brls/hints/back"_i18n, BUTTON_B, [this](View* view) {
+                Application::giveFocus(this->sidebar);
+                return true;
+            },
+            false, SOUND_BACK);
     });
 }
 

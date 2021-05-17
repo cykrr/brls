@@ -25,7 +25,7 @@ RecyclerCell::RecyclerCell()
 {
     this->setLineBottom(1);
     this->setLineColor(Application::getTheme()["brls/sidebar/separator"]);
-    
+
     this->registerClickAction([this](View* view) {
         RecyclerFrame* recycler = dynamic_cast<RecyclerFrame*>(getParent()->getParent());
         if (recycler)
@@ -33,7 +33,17 @@ RecyclerCell::RecyclerCell()
         return true;
     });
 
+    subscription = Application::getGlobalInputTypeChangeEvent()->subscribe([this](InputType type) {
+        bool isTouch = type == InputType::TOUCH;
+        this->setLineColor((!isTouch && this->focused) ? TRANSPARENT : Application::getTheme()["brls/sidebar/separator"]);
+    });
+
     this->addGestureRecognizer(new TapGestureRecognizer(this));
+}
+
+RecyclerCell::~RecyclerCell()
+{
+    Application::getGlobalInputTypeChangeEvent()->unsubscribe(subscription);
 }
 
 RecyclerCell* RecyclerCell::create()
@@ -44,7 +54,7 @@ RecyclerCell* RecyclerCell::create()
 void RecyclerCell::setIndexPath(IndexPath value)
 {
     indexPath = value;
-    
+
     this->setLineTop(value.row == 0 ? 1 : 0);
 }
 
@@ -53,7 +63,9 @@ void RecyclerCell::onFocusGained()
     // Called when a child of ours gets focused, in that case it's the Image
 
     Box::onFocusGained();
-    this->setLineColor(TRANSPARENT);
+
+    bool isTouch = Application::getInputType() == InputType::TOUCH;
+    this->setLineColor(!isTouch ? TRANSPARENT : Application::getTheme()["brls/sidebar/separator"]);
 }
 
 void RecyclerCell::onFocusLost()
@@ -90,8 +102,8 @@ RecyclerHeader* RecyclerHeader::create()
 
 RecyclerCell* RecyclerDataSource::cellForHeader(RecyclerFrame* recycler, int section)
 {
-    RecyclerHeader* header = (RecyclerHeader*) recycler->dequeueReusableCell("brls::Header");
-    std::string title = this->titleForHeader(recycler, section);
+    RecyclerHeader* header = (RecyclerHeader*)recycler->dequeueReusableCell("brls::Header");
+    std::string title      = this->titleForHeader(recycler, section);
     header->setTitle(title);
     header->setVisibility(title.empty() ? Visibility::GONE : Visibility::VISIBLE);
     header->setHeight(title.empty() ? 0 : View::AUTO);
@@ -106,7 +118,8 @@ float RecyclerDataSource::heightForHeader(RecyclerFrame* recycler, int section)
 }
 
 RecyclerContentBox::RecyclerContentBox(RecyclerFrame* recycler)
-    : Box(Axis::COLUMN), recycler(recycler)
+    : Box(Axis::COLUMN)
+    , recycler(recycler)
 {
 }
 
@@ -186,8 +199,8 @@ RecyclerFrame::RecyclerFrame()
 
 RecyclerFrame::~RecyclerFrame()
 {
-//    if (this->dataSource)
-//        delete dataSource;
+    //    if (this->dataSource)
+    //        delete dataSource;
 
     for (auto it : queueMap)
         delete it.second;
@@ -199,7 +212,7 @@ void RecyclerFrame::setDataSource(RecyclerDataSource* source)
         delete this->dataSource;
 
     this->dataSource = source;
-    if (checkWidth())
+    if (layouted)
         reloadData();
 }
 
@@ -210,6 +223,9 @@ RecyclerDataSource* RecyclerFrame::getDataSource() const
 
 void RecyclerFrame::reloadData()
 {
+    if (!layouted)
+        return;
+
     auto children = this->contentBox->getChildren();
     for (auto const& child : children)
     {
@@ -228,7 +244,7 @@ void RecyclerFrame::reloadData()
     if (dataSource)
     {
         cacheCellFrames();
-        Rect frame  = getFrame();
+        Rect frame  = getLocalFrame();
         int counter = 0;
         for (int section = 0; section < dataSource->numberOfSections(this); section++)
         {
@@ -239,6 +255,8 @@ void RecyclerFrame::reloadData()
                     break;
             }
         }
+
+        selectRowAt(defaultCellFocus, false);
     }
 }
 
@@ -275,6 +293,35 @@ RecyclerCell* RecyclerFrame::dequeueReusableCell(std::string identifier)
     return cell;
 }
 
+// TODO: Implement it normally
+void RecyclerFrame::selectRowAt(IndexPath indexPath, bool animated)
+{
+    int count    = 0;
+    float offset = 0;
+
+    for (int j = 0; j < indexPath.section; j++)
+        for (int i = -1; i < (dataSource->numberOfRows(this, j)); i++)
+        {
+            offset += this->cacheFramesData[count++].height;
+        }
+
+    for (int i = -1; i <= indexPath.row; i++)
+        offset += this->cacheFramesData[count++].height;
+
+    offset -= this->getHeight() / 2;
+    this->setContentOffsetY(offset, animated);
+    this->cellsRecyclingLoop();
+
+    for (View* view : contentBox->getChildren())
+    {
+        if (*((size_t*)view->getParentUserData()) == count - 1)
+        {
+            this->setLastFocusedView(view);
+            break;
+        }
+    }
+}
+
 void RecyclerFrame::queueReusableCell(RecyclerCell* cell)
 {
     queueMap.at(cell->reuseIdentifier)->push_back(cell);
@@ -293,11 +340,9 @@ void RecyclerFrame::cacheCellFrames()
         {
             for (int row = -1; row < dataSource->numberOfRows(this, section); row++)
             {
-                cacheIndexPathData.push_back(IndexPath(section, row, row));
+                cacheIndexPathData.push_back(IndexPath(section, row));
 
-                float height = row == -1 ? 
-                    dataSource->heightForHeader(this, section) : 
-                    dataSource->heightForRow(this, IndexPath(section, row, row));
+                float height = row == -1 ? dataSource->heightForHeader(this, section) : dataSource->heightForRow(this, IndexPath(section, row));
 
                 if (height == -1)
                     height = estimatedRowHeight;
@@ -314,7 +359,7 @@ bool RecyclerFrame::checkWidth()
 {
     float width           = getWidth();
     static float oldWidth = width;
-    if (oldWidth != width && width != 0)
+    if ((int)oldWidth != (int)width && width != 0)
     {
         oldWidth = width;
         return true;
@@ -325,9 +370,7 @@ bool RecyclerFrame::checkWidth()
 
 void RecyclerFrame::cellsRecyclingLoop()
 {
-    Rect frame        = getFrame();
     Rect visibleFrame = getVisibleFrame();
-    visibleFrame.origin.y -= frame.origin.y;
 
     while (true)
     {
@@ -399,11 +442,9 @@ void RecyclerFrame::addCellAt(int index, int downSide)
     }
 
     cell->setWidth(renderedFrame.getWidth() - paddingLeft - paddingRight);
-    Point cellOrigin = Point(renderedFrame.getMinX() + paddingLeft, 
-        (downSide ? 
-            renderedFrame.getMaxY() : 
-            renderedFrame.getMinY() - cell->getHeight()) + paddingTop);
-            
+    Point cellOrigin = Point(renderedFrame.getMinX() + paddingLeft,
+        (downSide ? renderedFrame.getMaxY() : renderedFrame.getMinY() - cell->getHeight()) + paddingTop);
+
     cell->setDetachedPosition(cellOrigin.x, cellOrigin.y);
     cell->setIndexPath(indexPath);
 
@@ -447,7 +488,10 @@ void RecyclerFrame::onLayout()
     ScrollingFrame::onLayout();
     this->contentBox->setWidth(this->getWidth());
     if (checkWidth())
+    {
+        layouted = true;
         reloadData();
+    }
 }
 
 void RecyclerFrame::draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx)

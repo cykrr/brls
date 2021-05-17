@@ -18,10 +18,10 @@
 
 #pragma once
 
-#include <borealis/core/event.hpp>
 #include <borealis/core/box.hpp>
-#include <borealis/views/recycler.hpp>
+#include <borealis/core/event.hpp>
 #include <borealis/views/applet_frame.hpp>
+#include <borealis/views/recycler.hpp>
 #include <string>
 
 namespace brls
@@ -47,29 +47,29 @@ class Dropdown : public Box, private RecyclerDataSource
     ValueSelectedEvent::Callback cb;
     std::vector<std::string> values;
     size_t selected;
-    
+
     int numberOfRows(RecyclerFrame* recycler, int section) override;
     RecyclerCell* cellForRow(RecyclerFrame* recycler, IndexPath index) override;
     void didSelectRowAt(RecyclerFrame* recycler, IndexPath index) override;
 
   protected:
-//    float getShowAnimationDuration(TransitionAnimation animation) override;
+    float getShowAnimationDuration(TransitionAnimation animation) override;
 
   public:
-    Dropdown(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, size_t selected = 0);
-    
-//    ~Dropdown();
+    Dropdown(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, int selected = 0);
 
-//    View* getDefaultFocus() override;
-//    virtual bool onCancel();
-//    void show(std::function<void(void)> cb, bool animate, float animationDuration) override;
-//    void willAppear(bool resetState = false) override;
-//    void willDisappear(bool resetState = false) override;
-//
-//    static void open(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, int selected = -1);
+    //    ~Dropdown();
+
+    //    View* getDefaultFocus() override;
+    //    virtual bool onCancel();
+    //    void show(std::function<void(void)> cb, bool animate, float animationDuration) override;
+    //    void willAppear(bool resetState = false) override;
+    //    void willDisappear(bool resetState = false) override;
+    //
+    //    static void open(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, int selected = -1);
 
     virtual AppletFrame* getAppletFrame() override;
-    
+
     bool isTranslucent() override
     {
         return true || View::isTranslucent();

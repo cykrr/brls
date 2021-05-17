@@ -75,9 +75,9 @@ void Ticking::stop(bool finished)
             break;
         }
     }
-    
+
     this->running = false;
-    
+
     this->onStop();
 
     this->endCallback(finished);

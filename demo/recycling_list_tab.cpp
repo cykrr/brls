@@ -80,8 +80,10 @@ RecyclingListTab::RecyclingListTab()
     pokemons.push_back(Pokemon("024", "Arbok"));
     pokemons.push_back(Pokemon("027", "Sandshrew"));
 
+    recycler->estimatedRowHeight = 70;
     recycler->registerCell("Header", []() { return RecyclerHeader::create(); });
     recycler->registerCell("Cell", []() { return RecyclerCell::create(); });
+    recycler->setDefaultCellFocus(brls::IndexPath(1, 6));
     recycler->setDataSource(new DataSource());
 }
 

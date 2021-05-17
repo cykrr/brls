@@ -18,14 +18,21 @@
 
 #pragma once
 
-#include <borealis/core/event.hpp>
 #include <borealis/core/bind.hpp>
 #include <borealis/core/box.hpp>
+#include <borealis/core/event.hpp>
 #include <borealis/views/image.hpp>
 #include <borealis/views/label.hpp>
 
 namespace brls
 {
+
+enum class HeaderStyle
+{
+    REGULAR,
+    DROPDOWN,
+    POPUP
+};
 
 // A Horizon settings-like frame, with header and footer (no sidebar)
 class AppletFrame : public Box
@@ -44,9 +51,21 @@ class AppletFrame : public Box
 
     void setIconFromRes(std::string name);
     void setIconFromFile(std::string path);
-    
+
     void setHeaderVisibility(Visibility visibility);
     void setFooterVisibility(Visibility visibility);
+
+    void setHeaderStyle(HeaderStyle style);
+
+    Box* getHeader()
+    {
+        return header;
+    }
+
+    Box* getFooter()
+    {
+        return footer;
+    }
 
     static View* create();
 
@@ -60,10 +79,12 @@ class AppletFrame : public Box
     BRLS_BIND(Image, icon, "brls/applet_frame/title_icon");
     BRLS_BIND(Box, hints, "hints");
 
+    HeaderStyle style = HeaderStyle::REGULAR;
+
   protected:
     std::vector<View*> contentViewStack;
     View* contentView = nullptr;
-    
+
     /**
      * Sets the content view for that AppletFrame.
      * Will be placed between header and footer and expanded with grow factor

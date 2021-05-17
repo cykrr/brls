@@ -5,9 +5,10 @@
 //  Created by Даниил Виноградов on 14.05.2021.
 //
 
-#include "borealis/views/cells/cell_radio.hpp"
 #include "borealis/views/dropdown.hpp"
+
 #include "borealis/core/application.hpp"
+#include "borealis/views/cells/cell_radio.hpp"
 
 namespace brls
 {
@@ -21,6 +22,7 @@ const std::string dropdownFrameXML = R"xml(
         axis="column"
         backgroundColor="@theme/brls/backdrop">
         <brls:AppletFrame
+            style="dropdown"
             id="brls/dropdown/applet"
             width="auto"
             height="auto"
@@ -45,35 +47,46 @@ const std::string dropdownFrameXML = R"xml(
     </brls:Box>
 )xml";
 
-Dropdown::Dropdown(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, size_t selected):
-    values(values), cb(cb), selected(selected)
+float min(float a, float b)
+{
+    if (a < b)
+        return a;
+    return b;
+}
+
+Dropdown::Dropdown(std::string title, std::vector<std::string> values, ValueSelectedEvent::Callback cb, int selected)
+    : values(values)
+    , cb(cb)
+    , selected(selected)
 {
     this->inflateFromXMLString(dropdownFrameXML);
-    
-    recycler->registerCell("Cell", [](){ return new RadioCell(); });
+
+    recycler->estimatedRowHeight = Application::getStyle()["brls/dropdown/listItemHeight"];
+    recycler->registerCell("Cell", []() { return new RadioCell(); });
+    recycler->setDefaultCellFocus(IndexPath(0, selected));
     recycler->setTitle(title);
     recycler->setDataSource(this);
-    
+
     Style style = Application::getStyle();
-    
+
     float height = numberOfRows(recycler, 0) * style["brls/dropdown/listItemHeight"]
-        + style["brls/applet_frame/header_height"]
-        + style["brls/applet_frame/footer_height"]
-        + style["brls/dropdown/listPadding"]
-        + style["brls/dropdown/listPadding"]
-    ;
-    
-    applet->setHeight(height);
+        + applet->getHeader()->getHeight()
+        + applet->getFooter()->getHeight()
+        + style["brls/dropdown/listPadding"] // top
+        + style["brls/dropdown/listPadding"] // bottom
+        ;
+
+    applet->setHeight(min(height, 576));
 }
 
 int Dropdown::numberOfRows(RecyclerFrame* recycler, int section)
 {
-    return values.size();
+    return (int)values.size();
 }
 
 RecyclerCell* Dropdown::cellForRow(RecyclerFrame* recycler, IndexPath index)
 {
-    RadioCell* cell = (RadioCell*) recycler->dequeueReusableCell("Cell");
+    RadioCell* cell = (RadioCell*)recycler->dequeueReusableCell("Cell");
     cell->title->setText(values[index.row]);
     cell->setSelected(index.row == selected);
     return cell;
@@ -88,6 +101,11 @@ void Dropdown::didSelectRowAt(RecyclerFrame* recycler, IndexPath index)
 AppletFrame* Dropdown::getAppletFrame()
 {
     return applet;
+}
+
+float Dropdown::getShowAnimationDuration(TransitionAnimation animation)
+{
+    return View::getShowAnimationDuration(animation) / 2;
 }
 
 } // namespace brls

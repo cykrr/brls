@@ -16,7 +16,8 @@
 
 #include "borealis/views/cells/cell_radio.hpp"
 
-namespace brls {
+namespace brls
+{
 
 const std::string radioCellXML = R"xml(
     <brls:Box
@@ -46,7 +47,7 @@ const std::string radioCellXML = R"xml(
 
 CheckBox::CheckBox()
 {
-    float size  = Application::getStyle()["brls/listitem/selectRadius"] * 2;
+    float size = Application::getStyle()["brls/listitem/selectRadius"] * 2;
     setWidth(size);
     setHeight(size);
 }
@@ -102,8 +103,11 @@ RadioCell::RadioCell()
 
 void RadioCell::setSelected(bool selected)
 {
+    Theme theme = Application::getTheme();
+
     this->selected = selected;
     this->checkbox->setVisibility(selected ? Visibility::VISIBLE : Visibility::GONE);
+    this->title->setTextColor(selected ? theme["brls/list/listItemValueColor"] : theme["brls/text"]);
 }
 
 bool RadioCell::getSelected()

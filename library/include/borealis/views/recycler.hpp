@@ -17,10 +17,10 @@
 #pragma once
 
 #include <borealis/core/bind.hpp>
+#include <borealis/views/header.hpp>
 #include <borealis/views/label.hpp>
 #include <borealis/views/rectangle.hpp>
 #include <borealis/views/scrolling_frame.hpp>
-#include <borealis/views/header.hpp>
 #include <functional>
 #include <map>
 #include <vector>
@@ -45,12 +45,23 @@ struct IndexPath
         this->row     = row;
         this->item    = item;
     }
+
+    IndexPath(int section, int row)
+        : IndexPath(section, row, row)
+    {
+    }
+
+    bool operator==(const IndexPath& other)
+    {
+        return section == other.section && row == other.row && item == other.item;
+    }
 };
 
 class RecyclerCell : public Box
 {
   public:
     RecyclerCell();
+    ~RecyclerCell();
 
     /*
      * Cell's position inside recycler frame
@@ -73,12 +84,13 @@ class RecyclerCell : public Box
     virtual void prepareForReuse() { }
 
     static RecyclerCell* create();
-    
+
     void onFocusGained() override;
     void onFocusLost() override;
 
   private:
     IndexPath indexPath;
+    Event<InputType>::Subscription subscription;
 };
 
 class RecyclerHeader
@@ -114,7 +126,7 @@ class RecyclerDataSource
      * Asks the data source for a cell to insert in a particular location of the recycler frame.
      */
     virtual RecyclerCell* cellForRow(RecyclerFrame* recycler, IndexPath index) { return nullptr; }
-    
+
     /*
      * Asks the data source for a cell to display in the header of the specified section of the recycler frame.
      */
@@ -125,7 +137,7 @@ class RecyclerDataSource
      * Return -1 to use autoscaling.
      */
     virtual float heightForRow(RecyclerFrame* recycler, IndexPath index) { return -1; }
-    
+
     /*
      * Asks the data source for the height to use for the header of a particular section.
      * Return -1 to use autoscaling.
@@ -148,6 +160,7 @@ class RecyclerContentBox : public Box
   public:
     RecyclerContentBox(RecyclerFrame* recycler);
     View* getNextFocus(FocusDirection direction, View* currentView) override;
+
   private:
     RecyclerFrame* recycler;
 };
@@ -195,17 +208,35 @@ class RecyclerFrame : public ScrollingFrame
     RecyclerCell* dequeueReusableCell(std::string identifier);
 
     /*
+     * Selects a row in the recycler frame identified by index path.
+     */
+    void selectRowAt(IndexPath indexPath, bool animated);
+
+    /*
      * Used for initial recycler's frame calculation if rows autoscaling selected.
      * To provide more accurate height implement DataSource->cellHeightForRow().
      */
     float estimatedRowHeight = 44;
 
+    IndexPath getDefaultCellFocus()
+    {
+        return this->defaultCellFocus;
+    }
+
+    void setDefaultCellFocus(IndexPath indexPath)
+    {
+        this->defaultCellFocus = indexPath;
+    }
+
     static View* create();
 
   private:
     RecyclerDataSource* dataSource = nullptr;
+    bool layouted                  = false;
 
     uint32_t visibleMin, visibleMax;
+
+    IndexPath defaultCellFocus;
 
     float paddingTop    = 0;
     float paddingRight  = 0;

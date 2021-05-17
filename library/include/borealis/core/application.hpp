@@ -176,6 +176,7 @@ class Application
 
     static GenericEvent* getGlobalFocusChangeEvent();
     static VoidEvent* getGlobalHintsUpdateEvent();
+    static Event<InputType>* getGlobalInputTypeChangeEvent();
 
     static View* getCurrentFocus();
 
@@ -199,7 +200,7 @@ class Application
      * Returns the current system locale.
      */
     static std::string getLocale();
-    
+
     static void addToFreeQueue(View* view);
 
     /**
@@ -246,6 +247,7 @@ class Application
 
     inline static GenericEvent globalFocusChangeEvent;
     inline static VoidEvent globalHintsUpdateEvent;
+    inline static Event<InputType> globalInputTypeChangeEvent;
 
     inline static std::unordered_map<std::string, XMLViewCreator> xmlViewsRegister;
 

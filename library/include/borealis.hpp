@@ -46,6 +46,7 @@
 // Views
 #include <borealis/views/applet_frame.hpp>
 #include <borealis/views/button.hpp>
+#include <borealis/views/dropdown.hpp>
 #include <borealis/views/header.hpp>
 #include <borealis/views/image.hpp>
 #include <borealis/views/label.hpp>
@@ -54,7 +55,6 @@
 #include <borealis/views/scrolling_frame.hpp>
 #include <borealis/views/sidebar.hpp>
 #include <borealis/views/tab_frame.hpp>
-#include <borealis/views/dropdown.hpp>
 
 // Gestures
 #include <borealis/core/touch/pan_gesture.hpp>

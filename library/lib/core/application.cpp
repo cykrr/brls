@@ -28,13 +28,13 @@
 #include <borealis/core/time.hpp>
 #include <borealis/core/util.hpp>
 #include <borealis/views/button.hpp>
+#include <borealis/views/cells/cell_radio.hpp>
 #include <borealis/views/header.hpp>
 #include <borealis/views/image.hpp>
 #include <borealis/views/rectangle.hpp>
 #include <borealis/views/recycler.hpp>
 #include <borealis/views/sidebar.hpp>
 #include <borealis/views/tab_frame.hpp>
-#include <borealis/views/cells/cell_radio.hpp>
 #include <stdexcept>
 #include <string>
 
@@ -252,11 +252,11 @@ bool Application::mainLoop()
 
     // Render
     Application::frame();
-    
+
     // Free views deletion pool
     for (auto view : Application::deletionPool)
         delete view;
-    
+
     Application::deletionPool.clear();
 
     return true;
@@ -378,7 +378,7 @@ void Application::onControllerButtonPressed(enum ControllerButton button, bool r
         default:
             break;
     }
-    
+
     // Only play the error sound if no action applied
     Application::getAudioPlayer()->play(SOUND_CLICK_ERROR);
 }
@@ -389,6 +389,7 @@ bool Application::setInputType(InputType type)
         return false;
 
     Application::inputType = type;
+    globalInputTypeChangeEvent.fire(type);
 
     if (type == InputType::GAMEPAD)
         Application::currentFocus->onFocusGained();
@@ -406,7 +407,7 @@ bool Application::handleAction(char button)
     // Dismiss if input type was changed
     if (button == BUTTON_A && setInputType(InputType::GAMEPAD))
         return false;
-    
+
     if (button == BUTTON_B && setInputType(InputType::GAMEPAD))
     {
         activitiesStack.back()->getContentView()->dismiss();
@@ -445,7 +446,7 @@ bool Application::handleAction(char button)
                 }
             }
         }
-        
+
         hintParent = hintParent->getParent();
     }
 
@@ -604,10 +605,11 @@ bool Application::popActivity(TransitionAnimation animation, std::function<void(
             if (newLast->isHidden())
             {
                 newLast->willAppear(false);
-                newLast->show([cb]{
+                newLast->show([cb] {
                     cb();
                     Application::unblockInputs();
-                }, true, newLast->getShowAnimationDuration(animation));
+                },
+                    true, newLast->getShowAnimationDuration(animation));
             }
             else
             {
@@ -615,10 +617,11 @@ bool Application::popActivity(TransitionAnimation animation, std::function<void(
                 Application::unblockInputs();
             }
         }
-        else {
+        else
+        {
             Application::unblockInputs();
         }
-        
+
         delete last;
     },
         true, last->getShowAnimationDuration(animation));
@@ -846,6 +849,11 @@ GenericEvent* Application::getGlobalFocusChangeEvent()
 VoidEvent* Application::getGlobalHintsUpdateEvent()
 {
     return &Application::globalHintsUpdateEvent;
+}
+
+Event<InputType>* Application::getGlobalInputTypeChangeEvent()
+{
+    return &Application::globalInputTypeChangeEvent;
 }
 
 int Application::getFont(std::string fontName)

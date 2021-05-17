@@ -211,6 +211,11 @@ class Box : public View
 
     View* getView(std::string id) override;
 
+    void setLastFocusedView(View* view)
+    {
+        this->lastFocusedView = view;
+    }
+
   private:
     Axis axis;
 
