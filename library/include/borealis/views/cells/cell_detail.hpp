@@ -24,30 +24,15 @@
 namespace brls
 {
 
-class CheckBox : public View
+class DetailCell : public RecyclerCell
 {
   public:
-    CheckBox();
-    virtual void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override;
-
-    static View* create();
-};
-
-class RadioCell : public RecyclerCell
-{
-  public:
-    RadioCell();
-
-    void setSelected(bool selected);
-    bool getSelected();
+    DetailCell();
 
     BRLS_BIND(Label, title, "brls/rediocell/title");
-    BRLS_BIND(CheckBox, checkbox, "brls/rediocell/checkbox");
+    BRLS_BIND(Label, detail, "brls/rediocell/detail");
     
     static View* create();
-
-  private:
-    bool selected = false;
 };
 
 } // namespace brls

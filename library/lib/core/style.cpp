@@ -56,9 +56,6 @@ static StyleValues styleValues = {
     { "brls/applet_frame/footer_padding_top_bottom", 20.0f },
     { "brls/applet_frame/footer_padding_sides", 25.0f },
 
-    { "brls/applet_frame/dropdown_header_height", 70.0f },
-    { "brls/applet_frame/dropdown_header_title_font_size", 24.0f },
-
     // TabFrame
     { "brls/tab_frame/sidebar_width", 410.0f },
     { "brls/tab_frame/content_padding_top_bottom", 42.0f }, // unused by the library, here for users
@@ -109,11 +106,19 @@ static StyleValues styleValues = {
     { "brls/dropdown/listPadding", 40.0f },
     { "brls/dropdown/listItemHeight", 60.0f },
     { "brls/dropdown/listItemTextSize", 20.0f },
+    
+    { "brls/dropdown/header_height", 70.0f },
+    { "brls/dropdown/header_title_font_size", 24.0f },
 
     // ListItem
     { "brls/listitem/descriptionIndent", 16.0f },
     { "brls/listitem/indent", 40.0f },
     { "brls/listitem/selectRadius", 15.0f },
+    
+    // Hints
+    { "brls/hints/footer_padding_sides", 55.0f },
+    { "brls/hints/footer_padding_top_bottom", 20.0f },
+    
 };
 
 static Style style(&styleValues);

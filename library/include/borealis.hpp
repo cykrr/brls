@@ -56,6 +56,12 @@
 #include <borealis/views/sidebar.hpp>
 #include <borealis/views/tab_frame.hpp>
 
+// Cells
+#include <borealis/views/cells/cell_radio.hpp>
+#include <borealis/views/cells/cell_bool.hpp>
+#include <borealis/views/cells/cell_selector.hpp>
+#include <borealis/views/cells/cell_input.hpp>
+
 // Gestures
 #include <borealis/core/touch/pan_gesture.hpp>
 #include <borealis/core/touch/scroll_gesture.hpp>

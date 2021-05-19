@@ -22,7 +22,7 @@ namespace brls
 const std::string radioCellXML = R"xml(
     <brls:Box
         width="auto"
-        height="@style/brls/dropdown/listItemHeight"
+        height="@style/brls/sidebar/item_height"
         focusable="true"
         paddingTop="12.5"
         paddingBottom="12.5"
@@ -33,7 +33,7 @@ const std::string radioCellXML = R"xml(
             width="auto"
             height="auto"
             grow="1"
-            fontSize="@style/brls/dropdown/listItemTextSize"
+            fontSize="@style/brls/sidebar/item_font_size"
             marginLeft="@style/brls/listitem/descriptionIndent"
             marginRight="@style/brls/listitem/descriptionIndent" />
 
@@ -113,6 +113,11 @@ void RadioCell::setSelected(bool selected)
 bool RadioCell::getSelected()
 {
     return this->selected;
+}
+
+View* RadioCell::create()
+{
+    return new RadioCell();
 }
 
 } // namespace brls

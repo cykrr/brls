@@ -19,35 +19,41 @@
 #include <borealis/core/application.hpp>
 #include <borealis/core/bind.hpp>
 #include <borealis/core/box.hpp>
+#include <borealis/views/cells/cell_detail.hpp>
 #include <borealis/views/recycler.hpp>
 
 namespace brls
 {
 
-class CheckBox : public View
+class BooleanCell : public DetailCell
 {
   public:
-    CheckBox();
-    virtual void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override;
-
-    static View* create();
-};
-
-class RadioCell : public RecyclerCell
-{
-  public:
-    RadioCell();
-
-    void setSelected(bool selected);
-    bool getSelected();
-
-    BRLS_BIND(Label, title, "brls/rediocell/title");
-    BRLS_BIND(CheckBox, checkbox, "brls/rediocell/checkbox");
+    BooleanCell();
+    
+    void init(std::string title, bool isOn, std::function<void(bool)> callback);
+    
+    void setOn(bool on, bool animated = true);
+    bool isOn()
+    {
+        return state;
+    }
+    
+    Event<bool>* getEvent()
+    {
+        return &event;
+    }
     
     static View* create();
-
+    
   private:
-    bool selected = false;
+    bool state;
+    float baseDetailTextSize;
+    
+    Animatable scale = 1;
+    Event<bool> event;
+    
+    void updateUI();
+    void scaleTick();
 };
 
 } // namespace brls

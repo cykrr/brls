@@ -26,6 +26,7 @@ static ThemeValues lightThemeValues = {
     // Generic values
     { "brls/background", nvgRGB(235, 235, 235) },
     { "brls/text", nvgRGB(45, 45, 45) },
+    { "brls/text_disabled", nvgRGB(140, 140, 140) },
     { "brls/backdrop", nvgRGBA(0, 0, 0, 178) },
     { "brls/click_pulse", nvgRGBA(13, 182, 213, 38) }, // same as highlight color1 with different opacity
 
@@ -73,6 +74,7 @@ static ThemeValues darkThemeValues = {
     // Generic values
     { "brls/background", nvgRGB(45, 45, 45) },
     { "brls/text", nvgRGB(255, 255, 255) },
+    { "brls/text_disabled", nvgRGB(80, 80, 80) },
     { "brls/backdrop", nvgRGBA(0, 0, 0, 178) },
     { "brls/click_pulse", nvgRGBA(25, 138, 198, 38) }, // same as highlight color1 with different opacity
 

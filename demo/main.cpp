@@ -28,6 +28,7 @@
 
 #include "captioned_image.hpp"
 #include "components_tab.hpp"
+#include "settings_tab.hpp"
 #include "main_activity.hpp"
 #include "pokemon_view.hpp"
 #include "recycling_list_tab.hpp"
@@ -62,6 +63,7 @@ int main(int argc, char* argv[])
     brls::Application::registerXMLView("RecyclingListTab", RecyclingListTab::create);
     brls::Application::registerXMLView("ComponentsTab", ComponentsTab::create);
     brls::Application::registerXMLView("PokemonView", PokemonView::create);
+    brls::Application::registerXMLView("SettingsTab", SettingsTab::create);
 
     // Add custom values to the theme
     brls::getLightTheme().addColor("captioned_image/caption", nvgRGB(2, 176, 183));
