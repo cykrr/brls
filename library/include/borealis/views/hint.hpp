@@ -38,4 +38,20 @@ class Hint : public Box
     BRLS_BIND(Label, hint, "hint");
 };
 
+class Hints : public Box
+{
+  public:
+    Hints();
+    ~Hints();
+    
+    static View* create();
+    
+  private:
+    void refillHints(View* focusView);
+    BRLS_BIND(Box, hints, "brls/hints");
+    
+    GenericEvent::Subscription hintSubscription;
+    static bool actionsSortFunc(Action a, Action b);
+};
+
 } // namespace brls

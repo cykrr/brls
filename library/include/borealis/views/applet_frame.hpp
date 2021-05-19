@@ -23,6 +23,7 @@
 #include <borealis/core/event.hpp>
 #include <borealis/views/image.hpp>
 #include <borealis/views/label.hpp>
+#include <borealis/views/hint.hpp>
 
 namespace brls
 {
@@ -30,7 +31,6 @@ namespace brls
 enum class HeaderStyle
 {
     REGULAR,
-    DROPDOWN,
     POPUP
 };
 
@@ -40,7 +40,6 @@ class AppletFrame : public Box
   public:
     AppletFrame();
     AppletFrame(View* contentView);
-    ~AppletFrame();
 
     void handleXMLElement(tinyxml2::XMLElement* element) override;
 
@@ -70,14 +69,10 @@ class AppletFrame : public Box
     static View* create();
 
   private:
-    GenericEvent::Subscription hintSubscription;
-    void refillHints(View* focusView);
-
     BRLS_BIND(Box, header, "brls/applet_frame/header");
-    BRLS_BIND(Box, footer, "brls/applet_frame/footer");
+    BRLS_BIND(Hints, footer, "brls/applet_frame/footer");
     BRLS_BIND(Label, title, "brls/applet_frame/title_label");
     BRLS_BIND(Image, icon, "brls/applet_frame/title_icon");
-    BRLS_BIND(Box, hints, "hints");
 
     HeaderStyle style = HeaderStyle::REGULAR;
 

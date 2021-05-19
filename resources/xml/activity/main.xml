@@ -22,6 +22,10 @@
         <brls:Tab label="@i18n/demo/tabs/pokedex">
             <RecyclingListTab />
         </brls:Tab>
+        
+        <brls:Tab label="@i18n/demo/tabs/settings">
+            <SettingsTab />
+        </brls:Tab>
 
         <brls:Separator />
 

@@ -73,35 +73,8 @@ const std::string appletFrameXML = R"xml(
             Direction inverted so that the bottom left text can be
             set to visibility="gone" without affecting the hint
         -->
-        <brls:Box
-            id="brls/applet_frame/footer"
-            width="auto"
-            height="@style/brls/applet_frame/footer_height"
-            axis="row"
-            direction="rightToLeft"
-            paddingLeft="@style/brls/applet_frame/footer_padding_sides"
-            paddingRight="@style/brls/applet_frame/footer_padding_sides"
-            paddingTop="@style/brls/applet_frame/footer_padding_top_bottom"
-            paddingBottom="@style/brls/applet_frame/footer_padding_top_bottom"
-            marginLeft="@style/brls/applet_frame/padding_sides"
-            marginRight="@style/brls/applet_frame/padding_sides"
-            lineColor="@theme/brls/applet_frame/separator"
-            lineTop="1px"
-            justifyContent="spaceBetween" >
-
-            <brls:Box
-                id="hints"
-                width="auto"
-                height="auto"
-                axis="row"
-                direction="leftToRight" />
-
-            <brls:Rectangle
-                width="75px"
-                height="auto"
-                color="#FF00FF" />
-
-        </brls:Box>
+        <brls:Hints
+            id="brls/applet_frame/footer"/>
 
     </brls:Box>
 )xml";
@@ -116,7 +89,6 @@ AppletFrame::AppletFrame()
         "style", HeaderStyle, this->setHeaderStyle,
         {
             { "regular", HeaderStyle::REGULAR },
-            { "dropdown", HeaderStyle::DROPDOWN },
             { "popup", HeaderStyle::POPUP },
         });
 
@@ -126,10 +98,6 @@ AppletFrame::AppletFrame()
 
     this->registerBoolXMLAttribute("footerHidden", [this](bool value) {
         this->setFooterVisibility(value ? Visibility::GONE : Visibility::VISIBLE);
-    });
-
-    hintSubscription = Application::getGlobalFocusChangeEvent()->subscribe([this](View* view) {
-        refillHints(view);
     });
 
     this->registerAction(
@@ -145,76 +113,6 @@ AppletFrame::AppletFrame(View* contentView)
 {
     contentViewStack.push_back(contentView);
     this->setContentView(contentView);
-}
-
-AppletFrame::~AppletFrame()
-{
-    Application::getGlobalFocusChangeEvent()->unsubscribe(hintSubscription);
-}
-
-bool actionsSortFunc(Action a, Action b)
-{
-    // From left to right:
-    //  - first +
-    //  - then all hints that are not B and A
-    //  - finally B and A
-
-    // + is before all others
-    if (a.button == BUTTON_START)
-        return true;
-
-    // A is after all others
-    if (b.button == BUTTON_A)
-        return true;
-
-    // B is after all others but A
-    if (b.button == BUTTON_B && a.button != BUTTON_A)
-        return true;
-
-    // Keep original order for the rest
-    return false;
-}
-
-void AppletFrame::refillHints(View* focusView)
-{
-    if (!focusView)
-        return;
-
-    hints->clearViews();
-
-    std::set<ControllerButton> addedButtons; // we only ever want one action per key
-    std::vector<Action> actions;
-
-    while (focusView != nullptr)
-    {
-        for (auto& action : focusView->getActions())
-        {
-            if (action.hidden)
-                continue;
-
-            if (addedButtons.find(action.button) != addedButtons.end())
-                continue;
-
-            addedButtons.insert(action.button);
-            actions.push_back(action);
-        }
-
-        focusView = focusView->getParent();
-    }
-
-    if (std::find(actions.begin(), actions.end(), BUTTON_A) == actions.end())
-    {
-        actions.push_back(Action { BUTTON_A, NULL, "brls/hints/ok"_i18n, false, false, Sound::SOUND_NONE, NULL });
-    }
-
-    // Sort the actions
-    std::stable_sort(actions.begin(), actions.end(), actionsSortFunc);
-
-    for (Action action : actions)
-    {
-        Hint* hint = new Hint(action);
-        hints->addView(hint);
-    }
 }
 
 void AppletFrame::setIconFromRes(std::string name)
@@ -321,9 +219,9 @@ void AppletFrame::setHeaderStyle(HeaderStyle style)
             header->setHeight(appStyle["brls/applet_frame/header_height"]);
             title->setFontSize(appStyle["brls/applet_frame/header_title_font_size"]);
             break;
-        case HeaderStyle::DROPDOWN:
-            header->setHeight(appStyle["brls/applet_frame/dropdown_header_height"]);
-            title->setFontSize(appStyle["brls/applet_frame/dropdown_header_title_font_size"]);
+        case HeaderStyle::POPUP:
+//            header->setHeight(appStyle["brls/applet_frame/dropdown_header_height"]);
+//            title->setFontSize(appStyle["brls/applet_frame/dropdown_header_title_font_size"]);
             break;
         default:
             break;

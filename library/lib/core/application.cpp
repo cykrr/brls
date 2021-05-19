@@ -38,6 +38,7 @@
 #include <borealis/views/recycler.hpp>
 #include <borealis/views/sidebar.hpp>
 #include <borealis/views/tab_frame.hpp>
+#include <borealis/views/hint.hpp>
 #include <stdexcept>
 #include <string>
 
@@ -891,6 +892,7 @@ void Application::registerBuiltInXMLViews()
     Application::registerXMLView("brls:Padding", Padding::create);
     Application::registerXMLView("brls:Button", Button::create);
     Application::registerXMLView("brls:CheckBox", CheckBox::create);
+    Application::registerXMLView("brls:Hints", Hints::create);
     
     // Cells
     Application::registerXMLView("brls:RadioCell", RadioCell::create);

@@ -44,6 +44,11 @@ bool ComponentsTab::onPrimaryButtonClicked(brls::View* view)
             selected = _selected;
         },
         selected);
+//    brls::Dropdown* dropdown = new brls::Dropdown(
+//        "Test", std::vector<std::string> { "Test 1", "Test 2", "Test 3" }, [](int _selected) {
+//            selected = _selected;
+//        },
+//        selected);
     brls::Application::pushActivity(new brls::Activity(dropdown));
     brls::Logger::info("Clicked");
     return true;

@@ -17,6 +17,7 @@
 #pragma once
 
 #include <borealis/core/bind.hpp>
+#include <borealis/core/application.hpp>
 #include <borealis/views/header.hpp>
 #include <borealis/views/label.hpp>
 #include <borealis/views/rectangle.hpp>

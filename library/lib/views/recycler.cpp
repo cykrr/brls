@@ -25,6 +25,8 @@ RecyclerCell::RecyclerCell()
 {
     this->setLineBottom(1);
     this->setLineColor(Application::getTheme()["brls/sidebar/separator"]);
+    
+    setHeight(Application::getStyle()["brls/dropdown/listItemHeight"]);
 
     this->registerClickAction([this](View* view) {
         RecyclerFrame* recycler = dynamic_cast<RecyclerFrame*>(getParent()->getParent());
