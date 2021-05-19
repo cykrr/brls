@@ -35,8 +35,8 @@ ScrollingFrame::ScrollingFrame()
 
     this->setMaximumAllowedXMLElements(1);
 
-    addGestureRecognizer(new ScrollGestureRecognizer([this](PanGestureStatus state) {
-        if (state.state == GestureState::FAILED)
+    addGestureRecognizer(new ScrollGestureRecognizer([this](PanGestureStatus state, Sound* soundToPlay) {
+        if (state.state == GestureState::FAILED || state.state == GestureState::UNSURE || state.state == GestureState::INTERRUPTED)
             return;
 
         if (state.deltaOnly)

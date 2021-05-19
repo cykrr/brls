@@ -33,6 +33,8 @@ enum Sound
     SOUND_CLICK_SIDEBAR, // played when a sidebar item is clicked
     SOUND_TOUCH_UNFOCUS, // played when touch focus has been interrupted
     SOUND_TOUCH, // played when touch doesn't require it's own click sound
+    SOUND_SLIDER_TICK,
+    SOUND_SLIDER_RELEASE,
 
     _SOUND_MAX, // not an actual sound, just used to count of many sounds there are
 };

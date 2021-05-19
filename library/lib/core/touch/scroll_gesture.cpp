@@ -33,6 +33,9 @@ GestureState ScrollGestureRecognizer::recognitionLoop(TouchState touch, View* vi
     if (!enabled)
         return GestureState::FAILED;
 
+    if (touch.phase == TouchPhase::NONE)
+        state = GestureState::UNSURE;
+    
     GestureState result;
     if (NO_TOUCH_SCROLLING)
         result = GestureState::FAILED;
@@ -48,7 +51,7 @@ GestureState ScrollGestureRecognizer::recognitionLoop(TouchState touch, View* vi
             .delta         = touch.scroll,
             .deltaOnly     = true,
         };
-        this->getPanGestureEvent().fire(status);
+        this->getPanGestureEvent().fire(status, soundToPlay);
     }
 
     return result;

@@ -52,7 +52,7 @@ GestureState PanGestureRecognizer::recognitionLoop(TouchState touch, View* view,
         if (this->state == GestureState::INTERRUPTED || this->state == GestureState::FAILED)
         {
             if (this->state != lastState)
-                this->panEvent.fire(getCurrentStatus());
+                this->panEvent.fire(getCurrentStatus(), soundToPlay);
 
             lastState = this->state;
             return this->state;
@@ -66,6 +66,7 @@ GestureState PanGestureRecognizer::recognitionLoop(TouchState touch, View* view,
             this->state         = GestureState::UNSURE;
             this->startPosition = touch.position;
             this->position      = touch.position;
+            this->panEvent.fire(getCurrentStatus(), soundToPlay);
             break;
         case TouchPhase::STAY:
         case TouchPhase::END:
@@ -127,7 +128,7 @@ GestureState PanGestureRecognizer::recognitionLoop(TouchState touch, View* view,
             {
                 PanGestureStatus state = getCurrentStatus();
                 state.acceleration     = acceleration;
-                this->panEvent.fire(state);
+                this->panEvent.fire(state, soundToPlay);
             }
 
             break;
@@ -143,6 +144,7 @@ GestureState PanGestureRecognizer::recognitionLoop(TouchState touch, View* view,
         posHistory.pop_back();
     }
 
+    lastState = this->state;
     return this->state;
 }
 

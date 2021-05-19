@@ -46,7 +46,7 @@ struct PanGestureStatus
     PanAcceleration acceleration;
 };
 
-typedef Event<PanGestureStatus> PanGestureEvent;
+typedef Event<PanGestureStatus, Sound*> PanGestureEvent;
 
 // Axis of pan recognition start conditions
 enum class PanAxis

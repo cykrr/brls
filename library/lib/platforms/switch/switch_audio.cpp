@@ -38,6 +38,8 @@ const std::string SOUNDS_MAP[_SOUND_MAX] = {
     "SeNaviDecide", // SOUND_CLICK_SIDEBAR
     "SeTouchUnfocus", // SOUND_TOUCH_UNFOCUS
     "SeTouch", // SOUND_TOUCH
+    "SeSliderTickOver", // SOUND_SLIDER_TICK
+    "SeSliderRelease" // SOUND_SLIDER_RELEASE
 };
 
 SwitchAudioPlayer::SwitchAudioPlayer()
