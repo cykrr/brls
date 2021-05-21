@@ -161,6 +161,11 @@ bool Rect::collideWith(const Rect& other) const
     return !((getMinX() > other.getMaxX() || getMaxX() < other.getMinX()) || (getMinY() > other.getMaxY() || getMaxY() < other.getMinY()));
 }
 
+bool Rect::inscribed(const Rect& other) const
+{
+    return ((getMinX() >= other.getMinX() && getMaxX() <= other.getMaxX()) && (getMinY() >= other.getMinY() && getMaxY() <= other.getMaxY()));
+}
+
 Rect Rect::offsetBy(const Point& origin) const
 {
     return Rect(this->origin + origin, this->size);

@@ -33,6 +33,19 @@
                 
             <brls:InputNumericCell
                 id="inputNumeric"/>
+                
+            <brls:RadioCell/>
+            <brls:RadioCell/>
+            <brls:RadioCell/>
+            <brls:RadioCell/>
+            <brls:RadioCell/>
+            <brls:RadioCell/>
+            <brls:RadioCell/>
+            <brls:RadioCell/>
+            <brls:RadioCell/>
+            <brls:RadioCell/>
+            <brls:RadioCell/>
+            <brls:RadioCell/>
             
             
         </brls:Box>

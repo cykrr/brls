@@ -53,28 +53,36 @@ const std::string hintsXML = R"xml(
 <brls:Box
     width="auto"
     height="@style/brls/applet_frame/footer_height"
-    axis="row"
-    direction="rightToLeft"
     paddingLeft="@style/brls/hints/footer_padding_sides"
     paddingRight="@style/brls/hints/footer_padding_sides"
-    paddingTop="@style/brls/hints/footer_padding_top_bottom"
-    paddingBottom="@style/brls/hints/footer_padding_top_bottom"
-    lineColor="@theme/brls/applet_frame/separator"
-    lineTop="1px"
-    justifyContent="spaceBetween" >
-
+    alignItems="stretch">
     <brls:Box
-        id="brls/hints"
         width="auto"
-        height="auto"
+        height="@style/brls/applet_frame/footer_height"
         axis="row"
-        direction="leftToRight" />
+        grow="1"
+        direction="rightToLeft"
+        lineColor="@theme/brls/applet_frame/separator"
+        lineTop="1px"
+        justifyContent="spaceBetween"
+        paddingTop="@style/brls/hints/footer_padding_top_bottom"
+        paddingBottom="@style/brls/hints/footer_padding_top_bottom"
+        paddingLeft="@style/brls/hints/footer_padding_top_bottom"
+        paddingRight="@style/brls/hints/footer_padding_top_bottom" >
 
-    <brls:Rectangle
-        width="75px"
-        height="auto"
-        color="#FF00FF" />
+        <brls:Box
+            id="brls/hints"
+            width="auto"
+            height="auto"
+            axis="row"
+            direction="leftToRight" />
 
+        <brls:Rectangle
+            width="75px"
+            height="auto"
+            color="#FF00FF" />
+
+    </brls:Box>
 </brls:Box>
 )xml";
 

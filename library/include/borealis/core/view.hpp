@@ -193,6 +193,8 @@ class View
     enum Sound focusSound = SOUND_FOCUS_CHANGE;
 
     bool hideHighlightBackground = false;
+    bool hideHighlightBorder = false;
+    bool hideHighlight = false;
 
     bool detached = false;
     Point detachedOrigin;
@@ -752,6 +754,22 @@ class View
     {
         this->hideHighlightBackground = hide;
     }
+    
+    /**
+     * If set to true, the highlight border will be hidden for this view.
+     */
+    inline void setHideHighlightBorder(bool hide)
+    {
+        this->hideHighlightBorder = hide;
+    }
+    
+    /**
+     * If set to true, the highlight will be hidden for this view.
+     */
+    inline void setHideHighlight(bool hide)
+    {
+        this->hideHighlight = hide;
+    }
 
     /**
      * Sets the highlight padding of the view, aka the space between the
@@ -1026,6 +1044,7 @@ class View
 
     void updateActionHint(enum ControllerButton button, std::string hintText);
     void setActionAvailable(enum ControllerButton button, bool available);
+    void setActionsAvailable(bool available);
 
     void resetClickAnimation();
     void playClickAnimation(bool reverse = false);
@@ -1223,10 +1242,7 @@ class View
      * in that direction - getNextFocus will then be called on our
      * parent if any
      */
-    virtual View* getNextFocus(FocusDirection direction, View* currentView)
-    {
-        return nullptr;
-    }
+    virtual View* getNextFocus(FocusDirection direction, View* currentView);
 
     /**
      * Sets a custom navigation route from this view to the target one.

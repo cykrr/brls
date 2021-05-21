@@ -369,7 +369,10 @@ View* Box::getNextFocus(FocusDirection direction, View* currentView)
     // Return nullptr immediately if focus direction mismatches the box axis (clang-format refuses to split it in multiple lines...)
     if ((this->axis == Axis::ROW && direction != FocusDirection::LEFT && direction != FocusDirection::RIGHT) || (this->axis == Axis::COLUMN && direction != FocusDirection::UP && direction != FocusDirection::DOWN))
     {
-        return nullptr;
+        View* next = getParentNavigationDecision(this, currentView, nullptr, direction);
+        if (!next && hasParent())
+            next = getParent()->getNextFocus(direction, this);
+        return next;
     }
 
     // Traverse the children
@@ -389,7 +392,18 @@ View* Box::getNextFocus(FocusDirection direction, View* currentView)
         currentFocusIndex += offset;
     }
 
+    currentFocus = getParentNavigationDecision(this, currentView, currentFocus, direction);
+    if (!currentFocus && hasParent())
+        currentFocus = getParent()->getNextFocus(direction, this);
     return currentFocus;
+}
+
+View* Box::getParentNavigationDecision(View* from, View* currentFocus, View* newFocus, FocusDirection direction)
+{
+    if (!hasParent())
+        return newFocus;
+    
+    return getParent()->getParentNavigationDecision(from, currentFocus, newFocus, direction);
 }
 
 void Box::willAppear(bool resetState)

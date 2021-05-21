@@ -32,7 +32,9 @@ ScrollingFrame::ScrollingFrame()
             { "natural", ScrollingBehavior::NATURAL },
             { "centered", ScrollingBehavior::CENTERED },
         });
-
+    
+    input = Application::getPlatform()->getInputManager();
+    this->setFocusable(behavior == ScrollingBehavior::NATURAL);
     this->setMaximumAllowedXMLElements(1);
 
     addGestureRecognizer(new ScrollGestureRecognizer([this](PanGestureStatus state, Sound* soundToPlay) {
@@ -75,10 +77,15 @@ ScrollingFrame::ScrollingFrame()
         if (status.state == GestureState::UNSURE)
             this->contentOffsetY.stop();
     }));
+    
+    setHideHighlightBackground(true);
+    setHideHighlightBorder(true);
 }
 
 void ScrollingFrame::draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx)
 {
+    naturalScrollingBehaviour();
+    
     // Update scrolling - try until it works
     if (this->updateScrollingOnNextFrame && this->updateScrolling(false))
         this->updateScrollingOnNextFrame = false;
@@ -94,6 +101,76 @@ void ScrollingFrame::draw(NVGcontext* vg, float x, float y, float width, float h
 
     //Disable scissoring
     nvgRestore(vg);
+}
+
+void ScrollingFrame::naturalScrollingBehaviour()
+{
+    if (behavior != ScrollingBehavior::NATURAL ||
+        !naturalScrollingCanScroll)
+        return;
+    
+    if (focused || childFocused)
+    {
+        ControllerState state;
+        input->updateControllerState(&state);
+        float bottomLimit = this->getContentHeight() - this->getScrollingAreaHeight();
+        static bool repeat = false;
+        
+        if (state.buttons[BUTTON_DOWN] && state.buttons[BUTTON_UP])
+            return;
+        
+        if (state.buttons[BUTTON_DOWN])
+        {
+            setContentOffsetY(getContentOffsetY() + (1000.0f / 60.0f), false);
+            View* current = Application::getCurrentFocus();
+            View* next = current->getParent()->getNextFocus(FocusDirection::DOWN, current);
+            if (next)
+            {
+                if (current != next->getDefaultFocus())
+                {
+                    Application::giveFocus(next);
+                    Application::getAudioPlayer()->play(SOUND_FOCUS_CHANGE);
+                }
+            }
+            
+            if (getContentOffsetY() >= bottomLimit && !repeat)
+            {
+                repeat = true;
+                Application::getCurrentFocus()->shakeHighlight(FocusDirection::DOWN);
+                Application::getAudioPlayer()->play(SOUND_FOCUS_ERROR);
+            }
+        }
+        
+        if (state.buttons[BUTTON_UP])
+        {
+            setContentOffsetY(getContentOffsetY() - (1000.0f / 60.0f), false);
+            View* current = Application::getCurrentFocus();
+            View* next = current->getParent()->getNextFocus(FocusDirection::UP, current);
+            if (next)
+            {
+                if (current != next->getDefaultFocus())
+                {
+                    Application::giveFocus(next);
+                    Application::getAudioPlayer()->play(SOUND_FOCUS_CHANGE);
+                }
+            }
+            
+            if (getContentOffsetY() <= 0 && !repeat)
+            {
+                repeat = true;
+                Application::getCurrentFocus()->shakeHighlight(FocusDirection::UP);
+                Application::getAudioPlayer()->play(SOUND_FOCUS_ERROR);
+            }
+        }
+        
+        if (!state.buttons[BUTTON_DOWN] && !state.buttons[BUTTON_UP] && contentView->getDefaultFocus())
+            naturalScrollingCanScroll = false;
+        
+        if ((!state.buttons[BUTTON_DOWN] && !state.buttons[BUTTON_UP] ) || (getContentOffsetY() > 0.01f && getContentOffsetY() < bottomLimit))
+        {
+            repeat = false;
+        }
+    }
 }
 
 void ScrollingFrame::addView(View* view)
@@ -210,6 +287,7 @@ void ScrollingFrame::animateScrolling(float newScroll, float time)
 void ScrollingFrame::setScrollingBehavior(ScrollingBehavior behavior)
 {
     this->behavior = behavior;
+    setFocusable(behavior == ScrollingBehavior::NATURAL);
 }
 
 float ScrollingFrame::getContentHeight()
@@ -245,6 +323,36 @@ void ScrollingFrame::scrollAnimationTick()
     }
 }
 
+View* ScrollingFrame::getNextFocus(FocusDirection direction, View* currentView)
+{
+    // To prevent sound click on empty scroll view
+    float bottomLimit    = this->getContentHeight() - this->getScrollingAreaHeight();
+    float contentOffsetY = this->getContentOffsetY();
+    if (direction == FocusDirection::DOWN && contentOffsetY < (bottomLimit - 0.01f))
+        return this;
+    
+    if (direction == FocusDirection::UP && this->getContentOffsetY() > 0.01f)
+        return this;
+    
+    return Box::getNextFocus(direction, currentView);
+}
+
+void ScrollingFrame::onFocusGained()
+{
+    if (contentView)
+    {
+        View* focus = contentView->getDefaultFocus();
+        if (focus)
+        {
+            Application::giveFocus(focus);
+            return;
+        }
+        else
+            naturalScrollingCanScroll = true;
+    }
+    Box::onFocusGained();
+}
+
 void ScrollingFrame::onChildFocusGained(View* directChild, View* focusedView)
 {
     Box::onChildFocusGained(directChild, focusedView);
@@ -252,13 +360,45 @@ void ScrollingFrame::onChildFocusGained(View* directChild, View* focusedView)
     this->childFocused = true;
 
     // Start scrolling
-    if (Application::getInputType() != InputType::TOUCH)
+    if (Application::getInputType() != InputType::TOUCH &&
+        behavior == ScrollingBehavior::CENTERED)
         this->updateScrolling(true);
 }
 
 void ScrollingFrame::onChildFocusLost(View* directChild, View* focusedView)
 {
     this->childFocused = false;
+}
+
+View* ScrollingFrame::getParentNavigationDecision(View* from, View* currentFocus, View* newFocus, FocusDirection direction)
+{
+    if (behavior == ScrollingBehavior::CENTERED)
+        return Box::getParentNavigationDecision(from, currentFocus, newFocus, direction);
+    
+    if (!newFocus)
+    {
+        if (direction == FocusDirection::LEFT || direction == FocusDirection::RIGHT)
+            return nullptr;
+        
+        if (from == contentView)
+        {
+            naturalScrollingCanScroll = true;
+            return currentFocus;
+        }
+        return nullptr;
+    }
+    else
+    {
+        if (newFocus->getFrame().inscribed(this->getFrame()))
+        {
+//            naturalScrollingCanScroll = false;
+            return newFocus;
+        }
+        else
+            naturalScrollingCanScroll = true;
+    }
+    
+    return currentFocus;
 }
 
 bool ScrollingFrame::updateScrolling(bool animated)

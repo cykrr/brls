@@ -43,6 +43,7 @@ class ScrollingFrame : public Box
     ScrollingFrame();
 
     void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override;
+    void onFocusGained() override;
     void onChildFocusGained(View* directChild, View* focusedView) override;
     void onChildFocusLost(View* directChild, View* focusedView) override;
     void willAppear(bool resetState) override;
@@ -54,8 +55,11 @@ class ScrollingFrame : public Box
     void setPaddingRight(float right) override;
     void setPaddingBottom(float bottom) override;
     void setPaddingLeft(float left) override;
+    View* getParentNavigationDecision(View* from, View* currentFocus, View* newFocus, FocusDirection direction) override;
+    View* getNextFocus(FocusDirection direction, View* currentView) override;
 
     Rect getVisibleFrame();
+    void naturalScrollingBehaviour();
 
     /**
      * Sets the content view of this scrolling box. There can only be one
@@ -107,6 +111,9 @@ class ScrollingFrame : public Box
     float getContentHeight();
 
     ScrollingBehavior behavior = ScrollingBehavior::NATURAL;
+    InputManager* input;
+    bool naturalScrollingCanScroll = false;
+//    View* nextFocus;
 };
 
 } // namespace brls

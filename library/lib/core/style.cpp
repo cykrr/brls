@@ -116,7 +116,7 @@ static StyleValues styleValues = {
     { "brls/listitem/selectRadius", 15.0f },
     
     // Hints
-    { "brls/hints/footer_padding_sides", 55.0f },
+    { "brls/hints/footer_padding_sides", 35.0f },
     { "brls/hints/footer_padding_top_bottom", 20.0f },
     
 };

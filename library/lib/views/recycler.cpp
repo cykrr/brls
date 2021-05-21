@@ -137,7 +137,10 @@ View* RecyclerFrame::getNextCellFocus(FocusDirection direction, View* currentVie
     // Return nullptr immediately if focus direction mismatches the box axis (clang-format refuses to split it in multiple lines...)
     if ((this->contentBox->getAxis() == Axis::ROW && direction != FocusDirection::LEFT && direction != FocusDirection::RIGHT) || (this->contentBox->getAxis() == Axis::COLUMN && direction != FocusDirection::UP && direction != FocusDirection::DOWN))
     {
-        return nullptr;
+        View* next = getParentNavigationDecision(this, currentView, nullptr, direction);
+        if (!next && hasParent())
+            next = getParent()->getNextFocus(direction, this);
+        return next;
     }
 
     // Traverse the children
@@ -164,6 +167,9 @@ View* RecyclerFrame::getNextCellFocus(FocusDirection direction, View* currentVie
         currentFocusIndex += offset;
     }
 
+    currentFocus = getParentNavigationDecision(this, currentView, currentFocus, direction);
+    if (!currentFocus && hasParent())
+        currentFocus = getParent()->getNextFocus(direction, this);
     return currentFocus;
 }
 

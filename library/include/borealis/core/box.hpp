@@ -79,6 +79,8 @@ class Box : public View
     bool applyXMLAttribute(std::string name, std::string value) override;
 
     static View* create();
+    
+    virtual View* getParentNavigationDecision(View* from, View* currentFocus, View* newFocus, FocusDirection direction);
 
     /**
      * Adds a view to this Box.

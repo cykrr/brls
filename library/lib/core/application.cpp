@@ -319,16 +319,7 @@ void Application::navigate(FocusDirection direction)
     else if (currentFocus->hasParent())
     {
         // Get next view to focus by traversing the views tree upwards
-        nextFocus = currentFocus->getParent()->getNextFocus(direction, currentFocus);
-
-        while (!nextFocus) // stop when we find a view to focus
-        {
-            if (!currentFocus->hasParent() || !currentFocus->getParent()->hasParent()) // stop when we reach the root of the tree
-                break;
-
-            currentFocus = currentFocus->getParent();
-            nextFocus    = currentFocus->getParent()->getNextFocus(direction, currentFocus);
-        }
+        nextFocus = currentFocus->getNextFocus(direction, currentFocus);
     }
 
     // No view to focus at the end of the traversal: wiggle and return
@@ -339,10 +330,13 @@ void Application::navigate(FocusDirection direction)
         return;
     }
 
-    // Otherwise play sound give it focus
-    enum Sound focusSound = nextFocus->getFocusSound();
-    Application::getAudioPlayer()->play(focusSound);
-    Application::giveFocus(nextFocus);
+    // If new focus not the same as now, play sound and give it focus
+    if (Application::getCurrentFocus() != nextFocus->getDefaultFocus())
+    {
+        enum Sound focusSound = nextFocus->getFocusSound();
+        Application::getAudioPlayer()->play(focusSound);
+        Application::giveFocus(nextFocus);
+    }
 }
 
 void Application::onControllerButtonPressed(enum ControllerButton button, bool repeating)

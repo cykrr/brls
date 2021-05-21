@@ -27,7 +27,7 @@
 
         "slider_header": "Slider",
         "labels_header": "Labels",
-        "regular_label": "This is a label. By default, they will automatically wrap and expand their height, should the remaining vertical space allow it. Otherwise, they will be truncated, like some of the tabs of the sidebar.",
+        "regular_label": "This is a label. By default, they will automatically wrap and expand their height, should the remaining vertical space allow it. Otherwise, they will be truncated, like some of the tabs of the sidebar.\nThis is a label. By default, they will automatically wrap and expand their height, should the remaining vertical space allow it. Otherwise, they will be truncated, like some of the tabs of the sidebar.",
         "label_left": "This label is left-aligned",
         "label_center": "This label is center-aligned",
         "label_right": "This label is right-aligned",

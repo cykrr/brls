@@ -177,7 +177,7 @@ void View::frame(FrameContext* ctx)
             this->drawBorder(ctx->vg, ctx, style, frame);
 
         // Draw highlight background
-        if (this->highlightAlpha > 0.0f && !this->hideHighlightBackground)
+        if (this->highlightAlpha > 0.0f && !this->hideHighlightBackground && !this->hideHighlight)
             this->drawHighlight(ctx->vg, ctx->theme, this->highlightAlpha, style, true);
 
         // Draw click animation
@@ -195,7 +195,7 @@ void View::frame(FrameContext* ctx)
         this->draw(ctx->vg, x, y, width, height, style, ctx);
 
         // Draw highlight
-        if (this->highlightAlpha > 0.0f)
+        if (this->highlightAlpha > 0.0f && !this->hideHighlightBorder && !this->hideHighlight)
             this->drawHighlight(ctx->vg, ctx->theme, this->highlightAlpha, style, false);
 
         if (this->wireframeEnabled)
@@ -701,6 +701,14 @@ void View::setActionAvailable(enum ControllerButton button, bool available)
 {
     if (auto it = std::find(this->actions.begin(), this->actions.end(), button); it != this->actions.end())
         it->available = available;
+}
+
+void View::setActionsAvailable(bool available)
+{
+    for (auto action : this->actions)
+    {
+        action.available = available;
+    }
 }
 
 void View::setParent(Box* parent, void* parentUserdata)
@@ -1261,6 +1269,11 @@ void View::onParentFocusGained(View* focusedView)
 
 void View::onParentFocusLost(View* focusedView)
 {
+}
+
+View* View::getNextFocus(FocusDirection direction, View* currentView)
+{
+    return getParent()->getNextFocus(direction, currentView);
 }
 
 void View::setCustomNavigationRoute(FocusDirection direction, View* target)
@@ -1959,6 +1972,16 @@ void View::registerCommonAttributes()
     // Highlight
     this->registerBoolXMLAttribute("hideHighlightBackground", [this](bool value) {
         this->setHideHighlightBackground(value);
+    });
+    
+    // Highlight
+    this->registerBoolXMLAttribute("hideHighlightBorder", [this](bool value) {
+        this->setHideHighlightBorder(value);
+    });
+    
+    // Highlight
+    this->registerBoolXMLAttribute("hideHighlight", [this](bool value) {
+        this->setHideHighlight(value);
     });
 
     this->registerFloatXMLAttribute("highlightPadding", [this](float value) {
