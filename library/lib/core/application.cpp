@@ -28,18 +28,18 @@
 #include <borealis/core/time.hpp>
 #include <borealis/core/util.hpp>
 #include <borealis/views/button.hpp>
-#include <borealis/views/cells/cell_radio.hpp>
 #include <borealis/views/cells/cell_bool.hpp>
-#include <borealis/views/cells/cell_selector.hpp>
 #include <borealis/views/cells/cell_input.hpp>
+#include <borealis/views/cells/cell_radio.hpp>
+#include <borealis/views/cells/cell_selector.hpp>
 #include <borealis/views/header.hpp>
+#include <borealis/views/hint.hpp>
 #include <borealis/views/image.hpp>
 #include <borealis/views/rectangle.hpp>
 #include <borealis/views/recycler.hpp>
 #include <borealis/views/sidebar.hpp>
-#include <borealis/views/tab_frame.hpp>
-#include <borealis/views/hint.hpp>
 #include <borealis/views/slider.hpp>
+#include <borealis/views/tab_frame.hpp>
 #include <stdexcept>
 #include <string>
 
@@ -696,11 +696,11 @@ void Application::pushActivity(Activity* activity, TransitionAnimation animation
     }
 
     activity->resizeToFitWindow();
-    
+
     activity->hide([] {}, false, NULL);
     if (!fadeOut)
         activity->show([] { Application::unblockInputs(); }, true, activity->getShowAnimationDuration(animation));
-    
+
     // Focus
     if (Application::activitiesStack.size() > 0 && Application::currentFocus != nullptr)
     {
@@ -890,7 +890,7 @@ void Application::registerBuiltInXMLViews()
     Application::registerXMLView("brls:CheckBox", CheckBox::create);
     Application::registerXMLView("brls:Hints", Hints::create);
     Application::registerXMLView("brls:Slider", Slider::create);
-    
+
     // Cells
     Application::registerXMLView("brls:RadioCell", RadioCell::create);
     Application::registerXMLView("brls:BooleanCell", BooleanCell::create);

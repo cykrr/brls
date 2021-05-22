@@ -15,8 +15,10 @@
 */
 
 #include "borealis/views/cells/cell_input.hpp"
-#include "borealis/views/dropdown.hpp"
+
 #include <borealis/platforms/switch/swkbd.hpp>
+
+#include "borealis/views/dropdown.hpp"
 
 namespace brls
 {
@@ -24,24 +26,24 @@ namespace brls
 InputCell::InputCell()
 {
     detail->setTextColor(Application::getTheme()["brls/list/listItem_value_color"]);
-    
+
     this->registerClickAction([this](View* view) {
         Swkbd::openForText([&](std::string text) {
-                this->setValue(text);
-            },
+            this->setValue(text);
+        },
             this->title->getFullText(), this->hint, this->maxInputLength, this->value, this->kbdDisableBitmask);
-        
+
         return true;
     });
 }
 
 void InputCell::init(std::string title, std::string value, Event<std::string>::Callback callback, std::string placeholder, std::string hint, int maxInputLength, int kbdDisableBitmask)
 {
-    this->hint = hint;
+    this->hint  = hint;
     this->value = value;
     this->title->setText(title);
-    this->placeholder = placeholder;
-    this->maxInputLength = maxInputLength;
+    this->placeholder       = placeholder;
+    this->maxInputLength    = maxInputLength;
     this->kbdDisableBitmask = kbdDisableBitmask;
     this->event.subscribe(callback);
     updateUI();
@@ -83,23 +85,23 @@ View* InputCell::create()
 InputNumericCell::InputNumericCell()
 {
     detail->setTextColor(Application::getTheme()["brls/list/listItem_value_color"]);
-    
+
     this->registerClickAction([this](View* view) {
         Swkbd::openForNumber([&](long number) {
-                this->setValue(number);
-            },
+            this->setValue(number);
+        },
             this->title->getFullText(), this->hint, this->maxInputLength, std::to_string(this->value), "", "", this->kbdDisableBitmask);
-        
+
         return true;
     });
 }
 
 void InputNumericCell::init(std::string title, long value, Event<long>::Callback callback, std::string hint, int maxInputLength, int kbdDisableBitmask)
 {
-    this->hint = hint;
+    this->hint  = hint;
     this->value = value;
     this->title->setText(title);
-    this->maxInputLength = maxInputLength;
+    this->maxInputLength    = maxInputLength;
     this->kbdDisableBitmask = kbdDisableBitmask;
     this->event.subscribe(callback);
     updateUI();

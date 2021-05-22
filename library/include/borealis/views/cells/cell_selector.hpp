@@ -30,26 +30,26 @@ class SelectorCell : public DetailCell
 {
   public:
     SelectorCell();
-    
+
     void init(std::string title, std::vector<std::string> data, int selected, Event<int>::Callback callback);
-    
+
     void setSelection(int selection);
     int getSelection()
     {
         return selection;
     }
-    
+
     Event<int>* getEvent()
     {
         return &event;
     }
-    
+
     static View* create();
-    
+
   private:
     int selection;
     std::vector<std::string> data;
-    
+
     Event<int> event;
     void updateUI();
 };

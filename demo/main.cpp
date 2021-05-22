@@ -28,10 +28,10 @@
 
 #include "captioned_image.hpp"
 #include "components_tab.hpp"
-#include "settings_tab.hpp"
 #include "main_activity.hpp"
 #include "pokemon_view.hpp"
 #include "recycling_list_tab.hpp"
+#include "settings_tab.hpp"
 
 using namespace brls::literals; // for _i18n
 

@@ -31,7 +31,7 @@ class DetailCell : public RecyclerCell
 
     BRLS_BIND(Label, title, "brls/rediocell/title");
     BRLS_BIND(Label, detail, "brls/rediocell/detail");
-    
+
     static View* create();
 };
 

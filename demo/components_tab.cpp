@@ -30,10 +30,9 @@ ComponentsTab::ComponentsTab()
     brls::Button* highlightButton = (brls::Button*)this->getView("button_highlight");
     highlightButton->registerAction(
         "Honk", brls::BUTTON_A, [](brls::View* view) { return true; }, false, brls::SOUND_HONK);
-    
+
     progress->setText(std::to_string((int)(slider->getProgress() * 100)));
-    slider->getProgressEvent()->subscribe([this](float progress)
-    {
+    slider->getProgressEvent()->subscribe([this](float progress) {
         this->progress->setText(std::to_string((int)(progress * 100)));
     });
 }
@@ -50,11 +49,11 @@ bool ComponentsTab::onPrimaryButtonClicked(brls::View* view)
             selected = _selected;
         },
         selected);
-//    brls::Dropdown* dropdown = new brls::Dropdown(
-//        "Test", std::vector<std::string> { "Test 1", "Test 2", "Test 3" }, [](int _selected) {
-//            selected = _selected;
-//        },
-//        selected);
+    //    brls::Dropdown* dropdown = new brls::Dropdown(
+    //        "Test", std::vector<std::string> { "Test 1", "Test 2", "Test 3" }, [](int _selected) {
+    //            selected = _selected;
+    //        },
+    //        selected);
     brls::Application::pushActivity(new brls::Activity(dropdown));
     brls::Logger::info("Clicked");
     return true;

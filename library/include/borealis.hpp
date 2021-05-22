@@ -54,14 +54,14 @@
 #include <borealis/views/recycler.hpp>
 #include <borealis/views/scrolling_frame.hpp>
 #include <borealis/views/sidebar.hpp>
-#include <borealis/views/tab_frame.hpp>
 #include <borealis/views/slider.hpp>
+#include <borealis/views/tab_frame.hpp>
 
 // Cells
-#include <borealis/views/cells/cell_radio.hpp>
 #include <borealis/views/cells/cell_bool.hpp>
-#include <borealis/views/cells/cell_selector.hpp>
 #include <borealis/views/cells/cell_input.hpp>
+#include <borealis/views/cells/cell_radio.hpp>
+#include <borealis/views/cells/cell_selector.hpp>
 
 // Gestures
 #include <borealis/core/touch/pan_gesture.hpp>

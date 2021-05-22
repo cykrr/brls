@@ -29,29 +29,29 @@ class BooleanCell : public DetailCell
 {
   public:
     BooleanCell();
-    
+
     void init(std::string title, bool isOn, std::function<void(bool)> callback);
-    
+
     void setOn(bool on, bool animated = true);
     bool isOn()
     {
         return state;
     }
-    
+
     Event<bool>* getEvent()
     {
         return &event;
     }
-    
+
     static View* create();
-    
+
   private:
     bool state;
     float baseDetailTextSize;
-    
+
     Animatable scale = 1;
     Event<bool> event;
-    
+
     void updateUI();
     void scaleTick();
 };

@@ -1973,12 +1973,12 @@ void View::registerCommonAttributes()
     this->registerBoolXMLAttribute("hideHighlightBackground", [this](bool value) {
         this->setHideHighlightBackground(value);
     });
-    
+
     // Highlight
     this->registerBoolXMLAttribute("hideHighlightBorder", [this](bool value) {
         this->setHideHighlightBorder(value);
     });
-    
+
     // Highlight
     this->registerBoolXMLAttribute("hideHighlight", [this](bool value) {
         this->setHideHighlight(value);

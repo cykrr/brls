@@ -108,7 +108,7 @@ struct Rect
 
     // Returns true if two rects have shared area.
     bool collideWith(const Rect& other) const;
-    
+
     // Returns true if this rect inscribed in other.
     bool inscribed(const Rect& other) const;
 

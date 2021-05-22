@@ -21,9 +21,9 @@
 #include <borealis/core/bind.hpp>
 #include <borealis/core/box.hpp>
 #include <borealis/core/event.hpp>
+#include <borealis/views/hint.hpp>
 #include <borealis/views/image.hpp>
 #include <borealis/views/label.hpp>
-#include <borealis/views/hint.hpp>
 
 namespace brls
 {

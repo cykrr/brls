@@ -21,8 +21,8 @@
 #include <borealis/core/box.hpp>
 #include <borealis/core/event.hpp>
 #include <borealis/views/applet_frame.hpp>
-#include <borealis/views/recycler.hpp>
 #include <borealis/views/hint.hpp>
+#include <borealis/views/recycler.hpp>
 #include <string>
 
 namespace brls
@@ -57,7 +57,7 @@ class Dropdown : public Box, private RecyclerDataSource
     int numberOfRows(RecyclerFrame* recycler, int section) override;
     RecyclerCell* cellForRow(RecyclerFrame* recycler, IndexPath index) override;
     void didSelectRowAt(RecyclerFrame* recycler, IndexPath index) override;
-    
+
     void offsetTick();
 
   protected:

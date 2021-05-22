@@ -22,12 +22,12 @@ class SettingsTab : public brls::Box
 {
   public:
     SettingsTab();
-    
+
     BRLS_BIND(brls::RadioCell, radio, "radio");
     BRLS_BIND(brls::BooleanCell, boolean, "boolean");
     BRLS_BIND(brls::SelectorCell, selector, "selector");
     BRLS_BIND(brls::InputCell, input, "input");
     BRLS_BIND(brls::InputNumericCell, inputNumeric, "inputNumeric");
-    
+
     static brls::View* create();
 };

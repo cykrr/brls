@@ -43,7 +43,7 @@ class RadioCell : public RecyclerCell
 
     BRLS_BIND(Label, title, "brls/rediocell/title");
     BRLS_BIND(CheckBox, checkbox, "brls/rediocell/checkbox");
-    
+
     static View* create();
 
   private:

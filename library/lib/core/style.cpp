@@ -106,7 +106,7 @@ static StyleValues styleValues = {
     { "brls/dropdown/listPadding", 40.0f },
     { "brls/dropdown/listItemHeight", 60.0f },
     { "brls/dropdown/listItemTextSize", 20.0f },
-    
+
     { "brls/dropdown/header_height", 70.0f },
     { "brls/dropdown/header_title_font_size", 24.0f },
 
@@ -114,11 +114,11 @@ static StyleValues styleValues = {
     { "brls/listitem/descriptionIndent", 16.0f },
     { "brls/listitem/indent", 40.0f },
     { "brls/listitem/selectRadius", 15.0f },
-    
+
     // Hints
     { "brls/hints/footer_padding_sides", 35.0f },
     { "brls/hints/footer_padding_top_bottom", 20.0f },
-    
+
 };
 
 static Style style(&styleValues);

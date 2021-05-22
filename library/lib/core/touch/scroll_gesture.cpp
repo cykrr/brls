@@ -35,7 +35,7 @@ GestureState ScrollGestureRecognizer::recognitionLoop(TouchState touch, View* vi
 
     if (touch.phase == TouchPhase::NONE)
         state = GestureState::UNSURE;
-    
+
     GestureState result;
     if (NO_TOUCH_SCROLLING)
         result = GestureState::FAILED;

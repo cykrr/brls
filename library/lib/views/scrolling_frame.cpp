@@ -18,7 +18,6 @@
 #include <borealis/core/application.hpp>
 #include <borealis/core/touch/scroll_gesture.hpp>
 #include <borealis/core/touch/tap_gesture.hpp>
-#include <borealis/core/util.hpp>
 #include <borealis/views/scrolling_frame.hpp>
 
 namespace brls
@@ -32,7 +31,7 @@ ScrollingFrame::ScrollingFrame()
             { "natural", ScrollingBehavior::NATURAL },
             { "centered", ScrollingBehavior::CENTERED },
         });
-    
+
     input = Application::getPlatform()->getInputManager();
     this->setFocusable(behavior == ScrollingBehavior::NATURAL);
     this->setMaximumAllowedXMLElements(1);
@@ -50,7 +49,10 @@ ScrollingFrame::ScrollingFrame()
 
         static float startY;
         if (state.state == GestureState::START)
+        {
+            Application::giveFocus(this);
             startY = this->contentOffsetY;
+        }
 
         float newScroll = startY - (state.position.y - state.startPosition.y);
 
@@ -82,12 +84,13 @@ ScrollingFrame::ScrollingFrame()
         if (!focused && !childFocused)
             return;
 
-        if (behavior == ScrollingBehavior::NATURAL && type == InputType::GAMEPAD) {
+        if (behavior == ScrollingBehavior::NATURAL && type == InputType::GAMEPAD)
+        {
             Application::giveFocus(getDefaultFocus());
             naturalScrollingCanScroll = false;
         }
     });
-    
+
     setHideHighlightBackground(true);
     setHideHighlightBorder(true);
 }
@@ -95,7 +98,7 @@ ScrollingFrame::ScrollingFrame()
 void ScrollingFrame::draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx)
 {
     naturalScrollingBehaviour();
-    
+
     // Update scrolling - try until it works
     if (this->updateScrollingOnNextFrame && this->updateScrolling(false))
         this->updateScrollingOnNextFrame = false;
@@ -142,23 +145,23 @@ void ScrollingFrame::naturalScrollingBehaviour()
 
     if (!naturalScrollingCanScroll)
         return;
-    
+
     if (focused || childFocused)
     {
         ControllerState state;
         input->updateControllerState(&state);
-        float bottomLimit = this->getContentHeight() - this->getScrollingAreaHeight();
+        float bottomLimit  = this->getContentHeight() - this->getScrollingAreaHeight();
         static bool repeat = false;
 
         // Do nothing if both up and down buttons pressed simultaneously
         if (state.buttons[BUTTON_DOWN] && state.buttons[BUTTON_UP])
             return;
-        
+
         if (state.buttons[BUTTON_DOWN])
         {
             naturalScrollingButtonProcessing(FocusDirection::DOWN, &repeat);
         }
-        
+
         if (state.buttons[BUTTON_UP])
         {
             naturalScrollingButtonProcessing(FocusDirection::UP, &repeat);
@@ -167,8 +170,8 @@ void ScrollingFrame::naturalScrollingBehaviour()
         View* currentFocus = Application::getCurrentFocus();
         if (!state.buttons[BUTTON_DOWN] && !state.buttons[BUTTON_UP] && (currentFocus != this))
             naturalScrollingCanScroll = false;
-        
-        if ((!state.buttons[BUTTON_DOWN] && !state.buttons[BUTTON_UP] ) || (getContentOffsetY() > 0.01f && getContentOffsetY() < bottomLimit))
+
+        if ((!state.buttons[BUTTON_DOWN] && !state.buttons[BUTTON_UP]) || (getContentOffsetY() > 0.01f && getContentOffsetY() < bottomLimit))
         {
             repeat = false;
         }
@@ -177,15 +180,17 @@ void ScrollingFrame::naturalScrollingBehaviour()
 
 View* ScrollingFrame::findTopMostFocusableView()
 {
-    Rect frame = getFrame();
-    Point check = Point(frame.getMidX(), frame.getMinY());
+    Rect frame       = getFrame();
+    Point check      = Point(frame.getMidX(), frame.getMinY());
     View* focusCheck = contentView->hitTest(check);
-    if (focusCheck) {
-        View *focusCheckDefaultFocus = focusCheck->getDefaultFocus();
+    if (focusCheck)
+    {
+        View* focusCheckDefaultFocus = focusCheck->getDefaultFocus();
         if (focusCheckDefaultFocus)
             focusCheck = focusCheckDefaultFocus;
 
-        while (focusCheck && !focusCheck->getFrame().inscribed(frame)) {
+        while (focusCheck && !focusCheck->getFrame().inscribed(frame))
+        {
             focusCheck = focusCheck->getParent()->getNextFocus(FocusDirection::DOWN, focusCheck);
         }
 
@@ -198,8 +203,8 @@ View* ScrollingFrame::findTopMostFocusableView()
 void ScrollingFrame::naturalScrollingButtonProcessing(FocusDirection focusDirection, bool* repeat)
 {
     float bottomLimit = this->getContentHeight() - this->getScrollingAreaHeight();
-    float newOffset = getContentOffsetY();
-    bool isBorder = false;
+    float newOffset   = getContentOffsetY();
+    bool isBorder     = false;
     switch (focusDirection)
     {
         case FocusDirection::UP:
@@ -216,7 +221,7 @@ void ScrollingFrame::naturalScrollingButtonProcessing(FocusDirection focusDirect
 
     setContentOffsetY(newOffset, false);
     View* current = Application::getCurrentFocus();
-    View* next = current->getParent()->getNextFocus(focusDirection, current);
+    View* next    = current->getParent()->getNextFocus(focusDirection, current);
     if (next)
     {
         if (current != next->getDefaultFocus())
@@ -395,24 +400,25 @@ View* ScrollingFrame::getNextFocus(FocusDirection direction, View* currentView)
     float contentOffsetY = this->getContentOffsetY();
     if (direction == FocusDirection::DOWN && contentOffsetY < (bottomLimit - 0.01f))
         return this;
-    
+
     if (direction == FocusDirection::UP && this->getContentOffsetY() > 0.01f)
         return this;
-    
+
     return Box::getNextFocus(direction, currentView);
 }
 
 View* ScrollingFrame::getDefaultFocus()
 {
     View* focus = contentView->getDefaultFocus();
+
+    if (behavior == ScrollingBehavior::CENTERED)
+        return focus;
+
     if (focus && focus->getFrame().inscribed(getFrame()))
-    {
         return focus;
-    }
-    else if (focus = findTopMostFocusableView(); focus && focus != this)
-    {
+
+    if (focus = findTopMostFocusableView(); focus && focus != this)
         return focus;
-    }
 
     return Box::getDefaultFocus();
 }
@@ -430,8 +436,7 @@ void ScrollingFrame::onChildFocusGained(View* directChild, View* focusedView)
     this->childFocused = true;
 
     // Start scrolling
-    if (Application::getInputType() == InputType::GAMEPAD &&
-        behavior == ScrollingBehavior::CENTERED)
+    if (Application::getInputType() == InputType::GAMEPAD && behavior == ScrollingBehavior::CENTERED)
         this->updateScrolling(true);
 }
 
@@ -450,7 +455,7 @@ View* ScrollingFrame::getParentNavigationDecision(View* from, View* newFocus, Fo
     {
         if (direction == FocusDirection::LEFT || direction == FocusDirection::RIGHT)
             return nullptr;
-        
+
         if (from == contentView)
         {
             naturalScrollingCanScroll = true;
@@ -548,7 +553,6 @@ View* ScrollingFrame::create()
 {
     return new ScrollingFrame();
 }
-
 
 ScrollingFrame::~ScrollingFrame()
 {

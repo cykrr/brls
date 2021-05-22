@@ -109,7 +109,7 @@ Dropdown::Dropdown(std::string title, std::vector<std::string> values, ValueSele
 {
     this->inflateFromXMLString(dropdownFrameXML);
     this->title->setText(title);
-    
+
     recycler->estimatedRowHeight = Application::getStyle()["brls/dropdown/listItemHeight"];
     recycler->registerCell("Cell", []() {
         RadioCell* cell = new RadioCell();
@@ -160,7 +160,7 @@ void Dropdown::show(std::function<void(void)> cb, bool animate, float animationD
     if (animate)
     {
         content->setTranslationY(30.0f);
-        
+
         showOffset.stop();
         showOffset.reset(30.0f);
         showOffset.addStep(0, animationDuration, EasingFunction::quadraticOut);
@@ -169,14 +169,14 @@ void Dropdown::show(std::function<void(void)> cb, bool animate, float animationD
         });
         showOffset.start();
     }
-    
+
     Box::show(cb, animate, animationDuration);
-    
+
     if (animate)
     {
         alpha.stop();
         alpha.reset(1);
-        
+
         applet->alpha.stop();
         applet->alpha.reset(0);
         applet->alpha.addStep(1, animationDuration, EasingFunction::quadraticOut);
@@ -186,18 +186,18 @@ void Dropdown::show(std::function<void(void)> cb, bool animate, float animationD
 
 void Dropdown::hide(std::function<void(void)> cb, bool animated, float animationDuration)
 {
-    
+
     if (animated)
     {
         alpha.stop();
         alpha.reset(0);
-        
+
         applet->alpha.stop();
         applet->alpha.reset(1);
         applet->alpha.addStep(0, animationDuration, EasingFunction::quadraticOut);
         applet->alpha.start();
     }
-    
+
     Box::hide(cb, animated, animationDuration);
 }
 
@@ -208,7 +208,6 @@ float Dropdown::getShowAnimationDuration(TransitionAnimation animation)
 
 void Dropdown::offsetTick()
 {
-//    hints->setAlpha(1);
     content->setTranslationY(showOffset);
 }
 

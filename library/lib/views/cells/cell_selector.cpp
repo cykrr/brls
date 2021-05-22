@@ -15,6 +15,7 @@
 */
 
 #include "borealis/views/cells/cell_selector.hpp"
+
 #include "borealis/views/dropdown.hpp"
 
 namespace brls
@@ -23,13 +24,14 @@ namespace brls
 SelectorCell::SelectorCell()
 {
     detail->setTextColor(Application::getTheme()["brls/list/listItem_value_color"]);
-    
+
     this->registerClickAction([this](View* view) {
-        Dropdown* dropdown = new Dropdown(this->title->getFullText(), data, [this](int selected)
-        {
-            this->setSelection(selected);
-            this->event.fire(selected);
-        }, selection);
+        Dropdown* dropdown = new Dropdown(
+            this->title->getFullText(), data, [this](int selected) {
+                this->setSelection(selected);
+                this->event.fire(selected);
+            },
+            selection);
         Application::pushActivity(new Activity(dropdown));
         return true;
     });
@@ -38,7 +40,7 @@ SelectorCell::SelectorCell()
 void SelectorCell::init(std::string title, std::vector<std::string> data, int selected, Event<int>::Callback callback)
 {
     this->title->setText(title);
-    this->data = data;
+    this->data      = data;
     this->selection = selected;
     this->event.subscribe(callback);
     updateUI();

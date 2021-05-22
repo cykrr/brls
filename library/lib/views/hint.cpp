@@ -15,10 +15,10 @@
 */
 
 #include <borealis/core/application.hpp>
+#include <borealis/core/i18n.hpp>
 #include <borealis/core/logger.hpp>
 #include <borealis/core/touch/tap_gesture.hpp>
 #include <borealis/core/util.hpp>
-#include <borealis/core/i18n.hpp>
 #include <borealis/views/applet_frame.hpp>
 #include <borealis/views/hint.hpp>
 
@@ -144,7 +144,7 @@ std::string Hint::getKeyIcon(ControllerButton button)
 Hints::Hints()
 {
     this->inflateFromXMLString(hintsXML);
-    
+
     hintSubscription = Application::getGlobalFocusChangeEvent()->subscribe([this](View* view) {
         refillHints(view);
     });

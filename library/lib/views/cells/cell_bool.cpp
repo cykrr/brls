@@ -15,6 +15,7 @@
 */
 
 #include "borealis/views/cells/cell_bool.hpp"
+
 #include <borealis/core/i18n.hpp>
 
 using namespace brls::literals;
@@ -43,19 +44,18 @@ void BooleanCell::init(std::string title, bool isOn, std::function<void(bool)> c
 void BooleanCell::setOn(bool on, bool animated)
 {
     this->state = on;
-    
+
     if (animated)
     {
         scale.stop();
         scale.reset(1);
         scale.addStep(0.8f, 100, EasingFunction::quadraticOut);
-        scale.setTickCallback([this]{
+        scale.setTickCallback([this] {
             this->scaleTick();
         });
-        scale.setEndCallback([this] (bool finished)
-        {
+        scale.setEndCallback([this](bool finished) {
             updateUI();
-            
+
             if (scale < 1)
             {
                 scale.addStep(1, 100, EasingFunction::quadraticIn);
@@ -80,7 +80,6 @@ void BooleanCell::updateUI()
 void BooleanCell::scaleTick()
 {
     detail->setFontSize(baseDetailTextSize * scale);
-//    if (scale )
 }
 
 View* BooleanCell::create()

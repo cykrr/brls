@@ -193,8 +193,8 @@ class View
     enum Sound focusSound = SOUND_FOCUS_CHANGE;
 
     bool hideHighlightBackground = false;
-    bool hideHighlightBorder = false;
-    bool hideHighlight = false;
+    bool hideHighlightBorder     = false;
+    bool hideHighlight           = false;
 
     bool detached = false;
     Point detachedOrigin;
@@ -723,10 +723,10 @@ class View
     {
         this->cornerRadius = radius;
     }
-    
+
     inline float getCornerRadius()
     {
-       return this->cornerRadius;
+        return this->cornerRadius;
     }
 
     /**
@@ -754,7 +754,7 @@ class View
     {
         this->hideHighlightBackground = hide;
     }
-    
+
     /**
      * If set to true, the highlight border will be hidden for this view.
      */
@@ -762,7 +762,7 @@ class View
     {
         this->hideHighlightBorder = hide;
     }
-    
+
     /**
      * If set to true, the highlight will be hidden for this view.
      */

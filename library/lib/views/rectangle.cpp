@@ -47,12 +47,12 @@ void Rectangle::draw(NVGcontext* vg, float x, float y, float width, float height
     nvgFillColor(vg, color);
 
     nvgBeginPath(vg);
-    
+
     if (this->getCornerRadius() > 0.0f)
         nvgRoundedRect(vg, x, y, width, height, this->getCornerRadius());
     else
         nvgRect(vg, x, y, width, height);
-    
+
     nvgFill(vg);
 }
 

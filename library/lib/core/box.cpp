@@ -402,7 +402,7 @@ View* Box::getParentNavigationDecision(View* from, View* newFocus, FocusDirectio
 {
     if (!hasParent())
         return newFocus;
-    
+
     return getParent()->getParentNavigationDecision(from, newFocus, direction);
 }
 

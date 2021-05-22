@@ -17,9 +17,9 @@
 
 #pragma once
 
+#include <borealis/core/application.hpp>
 #include <borealis/core/bind.hpp>
 #include <borealis/core/box.hpp>
-#include <borealis/core/application.hpp>
 #include <borealis/views/label.hpp>
 #include <borealis/views/rectangle.hpp>
 
@@ -28,36 +28,37 @@ namespace brls
 
 class Slider : public Box
 {
-public:
+  public:
     Slider();
-    
+
     void onLayout() override;
     View* getDefaultFocus() override;
     void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override;
-    
+
     void setProgress(float progress);
-    
+
     float getProgress()
     {
         return progress;
     }
-    
-    Event<float> *getProgressEvent()
+
+    Event<float>* getProgressEvent()
     {
         return &progressEvent;
     }
-    
+
     static View* create();
-private:
+
+  private:
     InputManager* input;
     Rectangle* line;
     Rectangle* lineEmpty;
     Rectangle* pointer;
-    
+
     Event<float> progressEvent;
-    
+
     float progress = 1;
-    
+
     void buttonsProcessing();
     void updateUI();
 };
