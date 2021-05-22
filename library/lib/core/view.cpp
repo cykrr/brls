@@ -2130,11 +2130,11 @@ View* View::hitTest(Point point)
         return nullptr;
 
     Rect frame = getFrame();
-    Logger::debug(describe() + ": --- " + frame.describe());
+//    Logger::debug(describe() + ": --- " + frame.describe());
 
     if (frame.pointInside(point))
     {
-        Logger::debug(describe() + ": OK");
+//        Logger::debug(describe() + ": OK");
         return this;
     }
 

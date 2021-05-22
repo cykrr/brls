@@ -80,7 +80,7 @@ class Box : public View
 
     static View* create();
     
-    virtual View* getParentNavigationDecision(View* from, View* currentFocus, View* newFocus, FocusDirection direction);
+    virtual View* getParentNavigationDecision(View* from, View* newFocus, FocusDirection direction);
 
     /**
      * Adds a view to this Box.

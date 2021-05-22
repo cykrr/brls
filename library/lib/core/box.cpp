@@ -318,7 +318,7 @@ View* Box::getDefaultFocus()
         return this;
 
     if (lastFocusedView)
-        return lastFocusedView;
+        return lastFocusedView->getDefaultFocus();
 
     // Then try default focus
     if (this->defaultFocusedIndex < this->children.size())
@@ -346,7 +346,7 @@ View* Box::hitTest(Point point)
     // Check if touch fits in view frame
     if (this->getFrame().pointInside(point))
     {
-        Logger::debug(describe() + ": --- X: " + std::to_string((int)getX()) + ", Y: " + std::to_string((int)getY()) + ", W: " + std::to_string((int)getWidth()) + ", H: " + std::to_string((int)getHeight()));
+//        Logger::debug(describe() + ": --- X: " + std::to_string((int)getX()) + ", Y: " + std::to_string((int)getY()) + ", W: " + std::to_string((int)getWidth()) + ", H: " + std::to_string((int)getHeight()));
         for (View* child : this->children)
         {
             View* result = child->hitTest(point);
@@ -355,7 +355,7 @@ View* Box::hitTest(Point point)
                 return result;
         }
 
-        Logger::debug(describe() + ": OK");
+//        Logger::debug(describe() + ": OK");
         return this;
     }
 
@@ -369,7 +369,7 @@ View* Box::getNextFocus(FocusDirection direction, View* currentView)
     // Return nullptr immediately if focus direction mismatches the box axis (clang-format refuses to split it in multiple lines...)
     if ((this->axis == Axis::ROW && direction != FocusDirection::LEFT && direction != FocusDirection::RIGHT) || (this->axis == Axis::COLUMN && direction != FocusDirection::UP && direction != FocusDirection::DOWN))
     {
-        View* next = getParentNavigationDecision(this, currentView, nullptr, direction);
+        View* next = getParentNavigationDecision(this, nullptr, direction);
         if (!next && hasParent())
             next = getParent()->getNextFocus(direction, this);
         return next;
@@ -392,18 +392,18 @@ View* Box::getNextFocus(FocusDirection direction, View* currentView)
         currentFocusIndex += offset;
     }
 
-    currentFocus = getParentNavigationDecision(this, currentView, currentFocus, direction);
+    currentFocus = getParentNavigationDecision(this, currentFocus, direction);
     if (!currentFocus && hasParent())
         currentFocus = getParent()->getNextFocus(direction, this);
     return currentFocus;
 }
 
-View* Box::getParentNavigationDecision(View* from, View* currentFocus, View* newFocus, FocusDirection direction)
+View* Box::getParentNavigationDecision(View* from, View* newFocus, FocusDirection direction)
 {
     if (!hasParent())
         return newFocus;
     
-    return getParent()->getParentNavigationDecision(from, currentFocus, newFocus, direction);
+    return getParent()->getParentNavigationDecision(from, newFocus, direction);
 }
 
 void Box::willAppear(bool resetState)
@@ -626,7 +626,7 @@ void Box::forwardXMLAttribute(std::string attributeName, View* target, std::stri
 
 void Box::onChildFocusGained(View* directChild, View* focusedView)
 {
-    lastFocusedView = focusedView;
+    lastFocusedView = directChild;
     if (this->hasParent())
         this->getParent()->onChildFocusGained(this, focusedView);
 }
