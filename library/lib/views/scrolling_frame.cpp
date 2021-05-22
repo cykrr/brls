@@ -409,11 +409,10 @@ View* ScrollingFrame::getNextFocus(FocusDirection direction, View* currentView)
 
 View* ScrollingFrame::getDefaultFocus()
 {
-    View* focus = contentView->getDefaultFocus();
-
     if (behavior == ScrollingBehavior::CENTERED)
-        return focus;
+        return Box::getDefaultFocus();
 
+    View* focus = contentView->getDefaultFocus();
     if (focus && focus->getFrame().inscribed(getFrame()))
         return focus;
 
