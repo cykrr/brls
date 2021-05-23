@@ -59,6 +59,7 @@ class ScrollingFrame : public Box
     View* getParentNavigationDecision(View* from, View* newFocus, FocusDirection direction) override;
     View* getNextFocus(FocusDirection direction, View* currentView) override;
     View* getDefaultFocus() override;
+    enum Sound getFocusSound() override;
     Rect getVisibleFrame();
 
     /**

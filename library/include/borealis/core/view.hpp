@@ -983,7 +983,7 @@ class View
         this->focusSound = sound;
     }
 
-    enum Sound getFocusSound();
+    virtual enum Sound getFocusSound();
 
     /**
      * Sets the detached flag to true.

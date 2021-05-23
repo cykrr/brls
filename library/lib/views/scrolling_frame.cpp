@@ -131,14 +131,16 @@ void ScrollingFrame::naturalScrollingBehaviour()
             Application::giveFocus(this);
         }
 
-        // If current focus equals this, try to find the closest to the top focusable view
-        // and set if as current focus.
+        // If current focus equals this (a.k. no focus inside scroll),
+        // try to find the closest to the top focusable view and set it as current focus.
         if (Application::getCurrentFocus() == this && Application::getInputType() == InputType::GAMEPAD)
         {
             View* topMostView = findTopMostFocusableView();
-            if (topMostView)
+            
+            if (topMostView && topMostView != currentFocus)
             {
                 Application::giveFocus(topMostView);
+                Application::getAudioPlayer()->play(Sound::SOUND_FOCUS_CHANGE);
             }
         }
     }
@@ -151,6 +153,8 @@ void ScrollingFrame::naturalScrollingBehaviour()
         ControllerState state;
         input->updateControllerState(&state);
         float bottomLimit  = this->getContentHeight() - this->getScrollingAreaHeight();
+        
+        // Sets true on border hit to play sound only once
         static bool repeat = false;
 
         // Do nothing if both up and down buttons pressed simultaneously
@@ -167,10 +171,16 @@ void ScrollingFrame::naturalScrollingBehaviour()
             naturalScrollingButtonProcessing(FocusDirection::UP, &repeat);
         }
 
+        // If there is focus inside scroll, and navigation buttons are not pressed
+        // disable natural scrolling
         View* currentFocus = Application::getCurrentFocus();
         if (!state.buttons[BUTTON_DOWN] && !state.buttons[BUTTON_UP] && (currentFocus != this))
+        {
             naturalScrollingCanScroll = false;
+        }
 
+        // If navigation buttons are not pressed and content offset not above border
+        // unflag repeat value to play border hit sound if needed
         if ((!state.buttons[BUTTON_DOWN] && !state.buttons[BUTTON_UP]) || (getContentOffsetY() > 0.01f && getContentOffsetY() < bottomLimit))
         {
             repeat = false;
@@ -227,7 +237,8 @@ void ScrollingFrame::naturalScrollingButtonProcessing(FocusDirection focusDirect
         if (current != next->getDefaultFocus())
         {
             Application::giveFocus(next);
-            Application::getAudioPlayer()->play(SOUND_FOCUS_CHANGE);
+            if (next != this)
+                Application::getAudioPlayer()->play(SOUND_FOCUS_CHANGE);
         }
     }
     else if (!current->getFrame().inscribed(getFrame()))
@@ -520,6 +531,15 @@ Rect ScrollingFrame::getVisibleFrame()
     Rect frame = getLocalFrame();
     frame.origin.y += this->contentOffsetY;
     return frame;
+}
+
+enum Sound ScrollingFrame::getFocusSound()
+{
+    if (!contentView->getDefaultFocus())
+    {
+        return Box::getFocusSound();
+    }
+    return Sound::SOUND_NONE;
 }
 
 #define NO_PADDING fatal("Padding is not supported by brls:ScrollingFrame, please set padding on the content view instead");
