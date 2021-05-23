@@ -22,6 +22,11 @@
 #include <borealis/views/applet_frame.hpp>
 #include <borealis/views/hint.hpp>
 
+#include <sstream>
+#include <iomanip>
+#include <chrono>
+#include <ctime>
+
 using namespace brls::literals;
 
 namespace brls
@@ -77,10 +82,11 @@ const std::string hintsXML = R"xml(
             axis="row"
             direction="leftToRight" />
 
-        <brls:Rectangle
+        <brls:Label
+            id="brls/hints/time"
             width="75px"
             height="auto"
-            color="#FF00FF" />
+            fontSize="21.5" />
 
     </brls:Box>
 </brls:Box>
@@ -218,6 +224,18 @@ bool Hints::actionsSortFunc(Action a, Action b)
 
     // Keep original order for the rest
     return false;
+}
+
+void Hints::draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx)
+{
+    auto timeNow = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(timeNow);
+
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%H:%M:%S");
+    
+    time->setText(ss.str());
+    Box::draw(vg, x, y, width, height, style, ctx);
 }
 
 View* Hints::create()

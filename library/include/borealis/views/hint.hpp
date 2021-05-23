@@ -43,12 +43,15 @@ class Hints : public Box
   public:
     Hints();
     ~Hints();
+    
+    void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override;
 
     static View* create();
 
   private:
     void refillHints(View* focusView);
     BRLS_BIND(Box, hints, "brls/hints");
+    BRLS_BIND(Label, time, "brls/hints/time");
 
     GenericEvent::Subscription hintSubscription;
     static bool actionsSortFunc(Action a, Action b);
