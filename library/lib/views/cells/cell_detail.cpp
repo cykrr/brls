@@ -53,6 +53,12 @@ DetailCell::DetailCell()
     this->inflateFromXMLString(detailCellXML);
 }
 
+void DetailCell::setTitle(std::string title)
+{
+    this->title->setText(title);
+    View::setTitle(title);
+}
+
 View* DetailCell::create()
 {
     return new DetailCell();

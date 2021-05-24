@@ -1362,7 +1362,7 @@ class View
      */
     static std::string getFilePathXMLAttributeValue(std::string value);
 
-    void setTitle(std::string title);
+    virtual void setTitle(std::string title);
 
     std::string getTitle()
     {

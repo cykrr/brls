@@ -29,6 +29,8 @@ class DetailCell : public RecyclerCell
   public:
     DetailCell();
 
+    void setTitle(std::string title);
+    
     BRLS_BIND(Label, title, "brls/rediocell/title");
     BRLS_BIND(Label, detail, "brls/rediocell/detail");
 

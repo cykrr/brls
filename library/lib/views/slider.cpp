@@ -209,7 +209,7 @@ void Slider::updateUI()
     lineEmpty->setDetachedPosition(lineEnd, lineYPos);
     lineEmpty->setWidth(lineEndWidth);
 
-    pointer->setDetachedPosition(lineEnd - pointer->getWidth() / 2, 0);
+    pointer->setDetachedPosition(lineEnd - pointer->getWidth() / 2, getHeight() / 2 - pointer->getHeight() / 2);
 }
 
 View* Slider::create()
