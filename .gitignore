@@ -9,3 +9,4 @@ build.nx/
 .vscode
 builddir
 *.dksh
+.DS_Store
