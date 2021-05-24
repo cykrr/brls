@@ -40,6 +40,7 @@
 #include <borealis/views/sidebar.hpp>
 #include <borealis/views/slider.hpp>
 #include <borealis/views/tab_frame.hpp>
+#include <borealis/views/progress_spinner.hpp>
 #include <stdexcept>
 #include <string>
 
@@ -890,8 +891,10 @@ void Application::registerBuiltInXMLViews()
     Application::registerXMLView("brls:CheckBox", CheckBox::create);
     Application::registerXMLView("brls:Hints", Hints::create);
     Application::registerXMLView("brls:Slider", Slider::create);
+    Application::registerXMLView("brls:ProgressSpinner", ProgressSpinner::create);
 
     // Cells
+    Application::registerXMLView("brls:DetailCell", DetailCell::create);
     Application::registerXMLView("brls:RadioCell", RadioCell::create);
     Application::registerXMLView("brls:BooleanCell", BooleanCell::create);
     Application::registerXMLView("brls:SelectorCell", SelectorCell::create);
