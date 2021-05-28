@@ -58,6 +58,20 @@
         return method(view);                                          \
     })
 
+#define ASYNC_RETAIN                   \
+    deletionToken = new bool(false);   \
+    bool* token = deletionToken;
+
+#define ASYNC_RELEASE                  \
+    bool release = *token;             \
+    delete token;                      \
+    if (release)                       \
+        return;                        \
+    else                               \
+        deletionToken = nullptr;
+
+#define ASYNC_TOKEN this, token
+
 namespace brls
 {
 
@@ -1387,9 +1401,9 @@ class View
     virtual AppletFrame* getAppletFrame();
 
     void present(View* view);
-    void dismiss();
     void dismiss(std::function<void(void)> cb = [] {});
 
+    bool* deletionToken = nullptr;
     void freeView();
 };
 

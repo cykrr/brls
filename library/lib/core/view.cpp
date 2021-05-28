@@ -1337,6 +1337,9 @@ View::~View()
     clickAlpha.stop();
     highlightAlpha.stop();
     collapseState.stop();
+    
+    if (deletionToken)
+        *deletionToken = true;
 }
 
 std::string View::getStringXMLAttributeValue(std::string value)
