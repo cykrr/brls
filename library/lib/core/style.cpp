@@ -123,6 +123,12 @@ static StyleValues styleValues = {
     { "brls/spinner/center_gap_multiplier", 0.2f },
     { "brls/spinner/bar_width_multiplier", 0.06f },
     { "brls/spinner/animation_duration", 1000 },
+    
+    // Dialog
+    { "brls/dialog/paddingTopBottom", 65 },
+    { "brls/dialog/paddingLeftRight", 115 },
+    
+    { "brls/dialog/fontSize", 24 },
 };
 
 static Style style(&styleValues);

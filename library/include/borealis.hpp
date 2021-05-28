@@ -57,6 +57,7 @@
 #include <borealis/views/slider.hpp>
 #include <borealis/views/tab_frame.hpp>
 #include <borealis/views/progress_spinner.hpp>
+#include <borealis/views/dialog.hpp>
 
 // Cells
 #include <borealis/views/cells/cell_bool.hpp>
