@@ -61,6 +61,10 @@ Button::Button()
     this->forwardXMLAttribute("animated", this->label);
     this->forwardXMLAttribute("autoAnimate", this->label);
     this->forwardXMLAttribute("textHorizontalAlign", this->label, "horizontalAlign");
+    
+    this->registerColorXMLAttribute("textColor", [this](NVGcolor color) {
+        this->setTextColor(color);
+    });
 
     BRLS_REGISTER_ENUM_XML_ATTRIBUTE(
         "style", const ButtonStyle*, this->setStyle,
@@ -126,8 +130,11 @@ void Button::applyStyle()
         this->setBackgroundColor(theme[backgroundColor]);
     else
         this->setBackground(ViewBackground::NONE);
-
-    this->label->setTextColor(theme[textColor]);
+    
+    if (textColorOverritten)
+        this->label->setTextColor(theme[textColor]);
+    else
+        this->label->setTextColor(this->textColor);
 
     if (this->getBorderThickness() > 0.0f)
         this->setBorderColor(theme[borderColor]);
@@ -150,6 +157,7 @@ void Button::onFocusLost()
 void Button::setStyle(const ButtonStyle* style)
 {
     this->style = style;
+    textColorOverritten = false;
     this->applyStyle();
 }
 
@@ -157,6 +165,13 @@ void Button::setState(ButtonState state)
 {
     this->state = state;
     this->applyStyle();
+}
+
+void Button::setTextColor(NVGcolor color)
+{
+    textColor = color;
+    textColorOverritten = true;
+    applyStyle();
 }
 
 void Button::setText(std::string text)
