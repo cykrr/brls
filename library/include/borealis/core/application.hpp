@@ -33,6 +33,7 @@
 #include <borealis/views/label.hpp>
 #include <unordered_map>
 #include <vector>
+#include <mutex>
 
 namespace brls
 {
@@ -45,6 +46,17 @@ enum class InputType
 };
 
 typedef std::function<View*(void)> XMLViewCreator;
+
+/**
+ * Enqueue a function to be executed before
+ * the application is redrawn the next time.
+ *
+ * Borealis is not thread-safe, and async() provides a mechanism
+ * for queuing up UI-related state changes from other threads.
+ *
+ * It's a shortcut for brls::Application::async(&func);
+ */
+extern void async(const std::function<void()> &func);
 
 class Application
 {
@@ -202,6 +214,15 @@ class Application
     static std::string getLocale();
 
     static void addToFreeQueue(View* view);
+    
+    /**
+     * Enqueue a function to be executed before
+     * the application is redrawn the next time.
+     *
+     * Borealis is not thread-safe, and async() provides a mechanism
+     * for queuing up UI-related state changes from other threads.
+     */
+    static void async(const std::function<void()> &func);
 
     /**
      * Returns the current input type.
@@ -269,6 +290,9 @@ class Application
     static void registerBuiltInXMLViews();
 
     static ActionIdentifier registerFPSToggleAction(Activity* activity);
+    
+    inline static std::mutex m_async_mutex;
+    inline static std::vector<std::function<void()>> m_async_functions;
 };
 
 } // namespace brls

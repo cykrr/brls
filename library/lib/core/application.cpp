@@ -159,6 +159,13 @@ bool Application::mainLoop()
 {
     static ControllerState oldControllerState = {};
     static View* firstResponder;
+    
+    /* Run async functions */ {
+        std::lock_guard<std::mutex> guard(m_async_mutex);
+        for (auto &f : m_async_functions)
+            f();
+        m_async_functions.clear();
+    }
 
     // Main loop callback
     if (!Application::platform->mainLoopIteration() || Application::quitRequested)
@@ -495,6 +502,9 @@ void Application::frame()
         View* view = viewsToDraw[viewsToDraw.size() - 1 - i];
         view->frame(&frameContext);
     }
+    
+    if (currentFocus)
+        currentFocus->frameHighlight(&frameContext);
 
     // End frame
     nvgResetTransform(Application::getNVGContext()); // scale
@@ -905,6 +915,16 @@ void Application::registerBuiltInXMLViews()
 void Application::registerXMLView(std::string name, XMLViewCreator creator)
 {
     Application::xmlViewsRegister[name] = creator;
+}
+
+void Application::async(const std::function<void()> &func) {
+    std::lock_guard<std::mutex> guard(m_async_mutex);
+    m_async_functions.push_back(func);
+}
+
+void async(const std::function<void()> &func)
+{
+    Application::async(func);
 }
 
 } // namespace brls
