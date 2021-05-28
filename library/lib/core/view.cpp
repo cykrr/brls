@@ -2179,13 +2179,13 @@ void View::present(View* view)
     applet->pushContentView(view);
 }
 
-void View::dismiss()
+void View::dismiss(std::function<void(void)> cb)
 {
     AppletFrame* applet = getAppletFrame();
     if (!applet)
         return;
 
-    applet->popContentView();
+    applet->popContentView(cb);
 }
 
 void View::freeView()

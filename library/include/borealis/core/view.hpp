@@ -1388,6 +1388,7 @@ class View
 
     void present(View* view);
     void dismiss();
+    void dismiss(std::function<void(void)> cb = [] {});
 
     void freeView();
 };

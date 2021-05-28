@@ -44,7 +44,7 @@ class AppletFrame : public Box
     void handleXMLElement(tinyxml2::XMLElement* element) override;
 
     void pushContentView(View* view);
-    void popContentView();
+    void popContentView(std::function<void(void)> cb = [] {});
 
     void setTitle(std::string title);
 
