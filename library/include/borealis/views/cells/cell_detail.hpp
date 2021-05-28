@@ -29,7 +29,10 @@ class DetailCell : public RecyclerCell
   public:
     DetailCell();
 
-    void setTitle(std::string title);
+    void setText(std::string title);
+    void setTextColor(NVGcolor color);
+    void setDetailText(std::string title);
+    void setDetailTextColor(NVGcolor color);
     
     BRLS_BIND(Label, title, "brls/rediocell/title");
     BRLS_BIND(Label, detail, "brls/rediocell/detail");

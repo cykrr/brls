@@ -49,6 +49,7 @@ void SelectorCell::init(std::string title, std::vector<std::string> data, int se
 void SelectorCell::setSelection(int selection)
 {
     this->selection = selection;
+    this->event.fire(selection);
     updateUI();
 }
 

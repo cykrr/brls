@@ -33,6 +33,11 @@ class SelectorCell : public DetailCell
 
     void init(std::string title, std::vector<std::string> data, int selected, Event<int>::Callback callback);
 
+    void setData(std::vector<std::string> data)
+    {
+        this->data = data;
+    }
+    
     void setSelection(int selection);
     int getSelection()
     {
