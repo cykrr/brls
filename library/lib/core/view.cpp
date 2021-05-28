@@ -194,10 +194,6 @@ void View::frame(FrameContext* ctx)
         // Draw the view
         this->draw(ctx->vg, x, y, width, height, style, ctx);
 
-        // Draw highlight
-        if (this->highlightAlpha > 0.0f && !this->hideHighlightBorder && !this->hideHighlight)
-            this->drawHighlight(ctx->vg, ctx->theme, this->highlightAlpha, style, false);
-
         if (this->wireframeEnabled)
             this->drawWireframe(ctx, frame);
 
@@ -213,6 +209,16 @@ void View::frame(FrameContext* ctx)
         ctx->theme = oldTheme;
 
     nvgRestore(ctx->vg);
+}
+
+void View::frameHighlight(FrameContext* ctx)
+{
+    if (this->alpha > 0.0f &&
+        this->collapseState != 0.0f &&
+        this->highlightAlpha > 0.0f &&
+        !this->hideHighlightBorder &&
+        !this->hideHighlight)
+        this->drawHighlight(ctx->vg, ctx->theme, this->highlightAlpha, Application::getStyle(), false);
 }
 
 void View::resetClickAnimation()

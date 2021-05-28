@@ -1130,6 +1130,11 @@ class View
       * override draw() instead
       */
     virtual void frame(FrameContext* ctx);
+    
+    /**
+      * Called each frame
+      */
+    void frameHighlight(FrameContext* ctx);
 
     /**
       * Called by frame() to draw the view onscreen.
