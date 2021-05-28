@@ -37,6 +37,8 @@ class TabFrame : public Box
     void handleXMLElement(tinyxml2::XMLElement* element) override;
 
     void addTab(std::string label, TabViewCreator creator);
+    void focusTab(int position);
+    void clearTabs();
     void addSeparator();
 
     static View* create();

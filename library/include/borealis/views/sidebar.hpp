@@ -41,6 +41,7 @@ class SidebarItemGroup
   public:
     void add(SidebarItem* item);
     void setActive(SidebarItem* item);
+    void clear();
 
   private:
     std::vector<SidebarItem*> items;
@@ -83,11 +84,18 @@ class Sidebar : public ScrollingFrame
      * when the item becomes active.
      */
     void addItem(std::string label, GenericEvent::Callback focusCallback);
-
+    
+    SidebarItem* getItem(int position);
+    
     /**
      * Adds a separator to this sidebar.
      */
     void addSeparator();
+    
+    /**
+     * Removes all items from sidebar.
+     */
+    void clearItems();
 
     static View* create();
 

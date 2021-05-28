@@ -83,6 +83,16 @@ void TabFrame::addTab(std::string label, TabViewCreator creator)
     });
 }
 
+void TabFrame::focusTab(int position)
+{
+    Application::giveFocus(this->sidebar->getItem(position));
+}
+
+void TabFrame::clearTabs()
+{
+    this->sidebar->clearItems();
+}
+
 void TabFrame::addSeparator()
 {
     this->sidebar->addSeparator();

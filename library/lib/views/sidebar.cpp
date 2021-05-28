@@ -180,9 +180,20 @@ void Sidebar::addItem(std::string label, GenericEvent::Callback focusCallback)
     this->contentBox->addView(item);
 }
 
+SidebarItem* Sidebar::getItem(int position)
+{
+    return dynamic_cast<SidebarItem*>(this->contentBox->getChildren()[position]);
+}
+
 void Sidebar::addSeparator()
 {
     this->contentBox->addView(new SidebarSeparator());
+}
+
+void Sidebar::clearItems()
+{
+    this->contentBox->clearViews();
+    group.clear();
 }
 
 View* Sidebar::create()
@@ -204,6 +215,11 @@ void SidebarItemGroup::setActive(SidebarItem* active)
         else
             item->setActive(false);
     }
+}
+
+void SidebarItemGroup::clear()
+{
+    this->items.clear();
 }
 
 SidebarSeparator::SidebarSeparator()
