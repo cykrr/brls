@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <borealis/core/application.hpp>
+#include <borealis/core/thread.hpp>
 #include <borealis/core/font.hpp>
 #include <borealis/core/i18n.hpp>
 #include <borealis/core/time.hpp>
@@ -78,8 +79,11 @@ bool Application::init()
 
     // Init i18n
     loadTranslations();
-
+    
+    Threading::start();
+    
     Application::inited = true;
+    
     return true;
 }
 
@@ -160,12 +164,8 @@ bool Application::mainLoop()
     static ControllerState oldControllerState = {};
     static View* firstResponder;
     
-    /* Run async functions */ {
-        std::lock_guard<std::mutex> guard(m_async_mutex);
-        for (auto &f : m_async_functions)
-            f();
-        m_async_functions.clear();
-    }
+    /* Run sync functions */
+    Threading::performSyncTasks();
 
     // Main loop callback
     if (!Application::platform->mainLoopIteration() || Application::quitRequested)
@@ -519,6 +519,13 @@ void Application::exit()
 
     Application::clear();
 
+    // Free views deletion pool
+    for (auto view : Application::deletionPool)
+        delete view;
+
+    Application::deletionPool.clear();
+    
+    Threading::stop();
     delete Application::platform;
 }
 
@@ -915,16 +922,6 @@ void Application::registerBuiltInXMLViews()
 void Application::registerXMLView(std::string name, XMLViewCreator creator)
 {
     Application::xmlViewsRegister[name] = creator;
-}
-
-void Application::async(const std::function<void()> &func) {
-    std::lock_guard<std::mutex> guard(m_async_mutex);
-    m_async_functions.push_back(func);
-}
-
-void async(const std::function<void()> &func)
-{
-    Application::async(func);
 }
 
 } // namespace brls
