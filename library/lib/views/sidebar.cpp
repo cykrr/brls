@@ -45,7 +45,7 @@ const std::string sidebarItemXML = R"xml(
 
         <brls:Label
             id="brls/sidebar/item_label"
-            width="10000"
+            width="auto"
             height="auto"
             grow="1.0"
             fontSize="@style/brls/sidebar/item_font_size"

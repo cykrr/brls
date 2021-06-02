@@ -280,7 +280,7 @@ void ScrollingFrame::setContentView(View* view)
 
     view->detach();
     view->setCulled(false);
-    view->setMaxWidth(this->getWidth());
+    view->setWidth(this->getWidth());
 
     Box::addView(view); // will invalidate the scrolling box, hence calling onLayout and invalidating the contentView
 }
@@ -289,7 +289,7 @@ void ScrollingFrame::onLayout()
 {
     if (this->contentView)
     {
-        this->contentView->setMaxWidth(this->getWidth());
+        this->contentView->setWidth(this->getWidth());
         this->contentView->invalidate();
     }
 }
