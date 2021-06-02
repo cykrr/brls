@@ -132,9 +132,9 @@ void Button::applyStyle()
         this->setBackground(ViewBackground::NONE);
     
     if (textColorOverritten)
-        this->label->setTextColor(theme[textColor]);
-    else
         this->label->setTextColor(this->textColor);
+    else
+        this->label->setTextColor(theme[textColor]);
 
     if (this->getBorderThickness() > 0.0f)
         this->setBorderColor(theme[borderColor]);
