@@ -506,6 +506,14 @@ void Application::frame()
     
     if (currentFocus)
         currentFocus->frameHighlight(&frameContext);
+    
+    if (debuggingViewEnabled)
+    {
+        if (!debugLayer)
+            debugLayer = new DebugLayer();
+        
+        debugLayer->frame(&frameContext);
+    }
 
     // End frame
     nvgResetTransform(Application::getNVGContext()); // scale

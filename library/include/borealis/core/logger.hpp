@@ -19,6 +19,7 @@
 
 #include <fmt/core.h>
 
+#include <borealis/core/event.hpp>
 #include <string>
 
 namespace brls
@@ -48,6 +49,9 @@ class Logger
             fmt::print("\033{}[{}]\033[0m ", color, prefix);
             fmt::print(format, args...);
             fmt::print("\n");
+            
+            std::string log = fmt::format(format, args...);
+            logEvent.fire(log);
         }
         catch (const std::exception& e)
         {
@@ -84,8 +88,14 @@ class Logger
         Logger::log(LogLevel::DEBUG, "DEBUG", "[0;32m", format, args...);
     }
 
+    static Event<std::string>* getLogEvent()
+    {
+        return &logEvent;
+    }
+    
   private:
     inline static LogLevel logLevel = LogLevel::INFO;
+    inline static Event<std::string> logEvent;
 };
 
 } // namespace brls

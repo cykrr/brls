@@ -34,6 +34,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <borealis/views/debug_layer.hpp>
+
 namespace brls
 {
 
@@ -210,10 +212,16 @@ class Application
     {
         return inputType;
     }
+    
+    inline static void enableDebuggingView(bool enable)
+    {
+        debuggingViewEnabled = enable;
+    }
 
   private:
     inline static bool inited        = false;
     inline static bool quitRequested = false;
+    inline static bool debuggingViewEnabled = false;
 
     inline static Platform* platform = nullptr;
 
@@ -271,6 +279,7 @@ class Application
 
     static ActionIdentifier registerFPSToggleAction(Activity* activity);
     
+    inline static DebugLayer* debugLayer = nullptr;
 };
 
 } // namespace brls
