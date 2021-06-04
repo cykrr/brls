@@ -27,6 +27,7 @@ namespace brls
 
 #define GLFW_GAMEPAD_BUTTON_NONE SIZE_MAX
 #define GLFW_GAMEPAD_BUTTON_MAX 15
+#define GLFW_GAMEPAD_AXIS_MAX 4
 
 // LT and RT do not exist here because they are axes
 static const size_t GLFW_BUTTONS_MAPPING[GLFW_GAMEPAD_BUTTON_MAX] = {
@@ -63,6 +64,13 @@ static const size_t GLFW_GAMEPAD_TO_KEYBOARD[GLFW_GAMEPAD_BUTTON_MAX] = {
     GLFW_KEY_RIGHT, // GLFW_GAMEPAD_BUTTON_DPAD_RIGHT
     GLFW_KEY_DOWN, // GLFW_GAMEPAD_BUTTON_DPAD_DOWN
     GLFW_KEY_LEFT, // GLFW_GAMEPAD_BUTTON_DPAD_LEFT
+};
+
+static const size_t GLFW_AXIS_MAPPING[GLFW_GAMEPAD_AXIS_MAX] = {
+    LEFT_X,
+    LEFT_Y,
+    RIGHT_X,
+    RIGHT_Y,
 };
 
 static void glfwJoystickCallback(int jid, int event)
@@ -117,6 +125,14 @@ void GLFWInputManager::updateControllerState(ControllerState* state)
         // Translate GLFW gamepad to borealis controller
         size_t brlsButton          = GLFW_BUTTONS_MAPPING[i];
         state->buttons[brlsButton] = (bool)glfwState.buttons[i];
+    }
+    
+    state->buttons[BUTTON_LT] = glfwState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER] > 0.1f;
+    state->buttons[BUTTON_RT] = glfwState.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER] > 0.1f;
+    
+    for (size_t i = 0; i < GLFW_GAMEPAD_AXIS_MAX; i++)
+    {
+        state->axes[GLFW_AXIS_MAPPING[i]] = glfwState.axes[i];
     }
 }
 

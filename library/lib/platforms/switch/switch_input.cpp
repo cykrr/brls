@@ -27,11 +27,11 @@ static const uint64_t SWITCH_BUTTONS_MAPPING[_BUTTON_MAX] = {
     HidNpadButton_L, // BUTTON_LB
 
     HidNpadButton_StickL, // BUTTON_LSB
-
-    HidNpadButton_AnyUp, // BUTTON_UP
-    HidNpadButton_AnyRight, // BUTTON_RIGHT
-    HidNpadButton_AnyDown, // BUTTON_DOWN
-    HidNpadButton_AnyLeft, // BUTTON_LEFT
+    
+    HidNpadButton_Up, // BUTTON_UP
+    HidNpadButton_Right, // BUTTON_RIGHT
+    HidNpadButton_Down, // BUTTON_DOWN
+    HidNpadButton_Left, // BUTTON_LEFT
 
     HidNpadButton_Minus, // BUTTON_BACK
     HidNpadButton_None, // BUTTON_GUIDE
@@ -46,6 +46,13 @@ static const uint64_t SWITCH_BUTTONS_MAPPING[_BUTTON_MAX] = {
 
     HidNpadButton_R, // BUTTON_RB
     HidNpadButton_ZR, // BUTTON_RT
+};
+
+static const size_t SWITCH_AXIS_MAPPING[_AXES_MAX] = {
+    LEFT_X,
+    LEFT_Y,
+    RIGHT_X,
+    RIGHT_Y,
 };
 
 SwitchInputManager::SwitchInputManager()
@@ -64,6 +71,14 @@ void SwitchInputManager::updateControllerState(ControllerState* state)
         uint64_t switchKey = SWITCH_BUTTONS_MAPPING[i];
         state->buttons[i]  = keysDown & switchKey;
     }
+    
+    HidAnalogStickState analog_stick_l = padGetStickPos(&this->padState, 0);
+    HidAnalogStickState analog_stick_r = padGetStickPos(&this->padState, 1);
+
+    state->axes[LEFT_X] =  (float)analog_stick_l.x / (float)0x7FFF;
+    state->axes[LEFT_Y] =  (float)analog_stick_l.y / (float)0x7FFF * -1.0f;
+    state->axes[RIGHT_X] = (float)analog_stick_r.x / (float)0x7FFF;
+    state->axes[RIGHT_Y] = (float)analog_stick_r.y / (float)0x7FFF * -1.0f;
 }
 
 void SwitchInputManager::updateTouchState(RawTouchState* state)
