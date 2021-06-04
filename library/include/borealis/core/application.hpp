@@ -146,7 +146,7 @@ class Application
     /**
       * Blocks any and all user inputs
       */
-    static void blockInputs();
+    static void blockInputs(bool muteSounds = false);
 
     /**
       * Unblocks inputs after a call to
@@ -235,7 +235,8 @@ class Application
     inline static InputType inputType = InputType::GAMEPAD;
 
     inline static unsigned blockInputsTokens = 0; // any value > 0 means inputs are blocked
-
+    inline static bool muteSounds = false;
+    
     inline static std::string commonFooter = "";
 
     inline static bool globalQuitEnabled                     = false;

@@ -352,7 +352,8 @@ void Application::onControllerButtonPressed(enum ControllerButton button, bool r
     if (Application::blockInputsTokens != 0)
     {
         Logger::debug("{} button press blocked (tokens={})", button, Application::blockInputsTokens);
-        Application::getAudioPlayer()->play(Sound::SOUND_CLICK_ERROR);
+        if (!muteSounds)
+            Application::getAudioPlayer()->play(Sound::SOUND_CLICK_ERROR);
         return;
     }
 
@@ -801,8 +802,9 @@ void Application::crash(std::string text)
     // To be implemented
 }
 
-void Application::blockInputs()
+void Application::blockInputs(bool muteSounds)
 {
+    Application::muteSounds |= muteSounds;
     Application::blockInputsTokens += 1;
     Logger::debug("Adding an inputs block token (tokens={})", Application::blockInputsTokens);
 }
@@ -811,7 +813,10 @@ void Application::unblockInputs()
 {
     if (Application::blockInputsTokens > 0)
         Application::blockInputsTokens -= 1;
-
+    
+    if (Application::blockInputsTokens <= 0)
+        muteSounds = false;
+    
     Logger::debug("Removing an inputs block token (tokens={})", Application::blockInputsTokens);
 }
 
