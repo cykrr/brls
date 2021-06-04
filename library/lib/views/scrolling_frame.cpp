@@ -33,7 +33,7 @@ ScrollingFrame::ScrollingFrame()
         });
 
     input = Application::getPlatform()->getInputManager();
-    this->setFocusable(behavior == ScrollingBehavior::NATURAL);
+    this->setFocusable(true);
     this->setMaximumAllowedXMLElements(1);
 
     addGestureRecognizer(new ScrollGestureRecognizer([this](PanGestureStatus state, Sound* soundToPlay) {
@@ -368,7 +368,6 @@ void ScrollingFrame::animateScrolling(float newScroll, float time)
 void ScrollingFrame::setScrollingBehavior(ScrollingBehavior behavior)
 {
     this->behavior = behavior;
-    setFocusable(behavior == ScrollingBehavior::NATURAL);
 }
 
 float ScrollingFrame::getContentHeight()
@@ -421,7 +420,13 @@ View* ScrollingFrame::getNextFocus(FocusDirection direction, View* currentView)
 View* ScrollingFrame::getDefaultFocus()
 {
     if (behavior == ScrollingBehavior::CENTERED)
-        return Box::getDefaultFocus();
+    {
+        View* focus = contentView->getDefaultFocus();
+        if (focus)
+            return focus;
+        else
+            return Box::getDefaultFocus();
+    }
 
     View* focus = contentView->getDefaultFocus();
     if (focus && focus->getFrame().inscribed(getFrame()))
@@ -499,7 +504,7 @@ bool ScrollingFrame::updateScrolling(bool animated)
     float localY      = focusedView->getLocalY();
     View* parent      = focusedView->getParent();
 
-    while (dynamic_cast<ScrollingFrame*>(parent->getParent()) == nullptr)
+    while (parent && dynamic_cast<ScrollingFrame*>(parent->getParent()) == nullptr)
     {
         localY += parent->getLocalY();
         parent = parent->getParent();

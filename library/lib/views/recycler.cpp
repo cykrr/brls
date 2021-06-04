@@ -324,7 +324,7 @@ void RecyclerFrame::selectRowAt(IndexPath indexPath, bool animated)
     {
         if (*((size_t*)view->getParentUserData()) == count - 1)
         {
-            this->setLastFocusedView(view);
+            contentBox->setLastFocusedView(view);
             break;
         }
     }
