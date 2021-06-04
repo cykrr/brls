@@ -40,6 +40,7 @@
 #include <borealis/core/theme.hpp>
 #include <borealis/core/time.hpp>
 #include <borealis/core/timer.hpp>
+#include <borealis/core/thread.hpp>
 #include <borealis/core/video.hpp>
 #include <borealis/core/view.hpp>
 

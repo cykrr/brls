@@ -20,6 +20,7 @@ borealis_files = files(
     'lib/core/view.cpp',
     'lib/core/box.cpp',
     'lib/core/bind.cpp',
+    'lib/core/thread.cpp',
 
     'lib/core/gesture.cpp',
     'lib/core/touch/tap_gesture.cpp',
@@ -47,6 +48,7 @@ borealis_files = files(
     'lib/views/slider.cpp',
     'lib/views/dropdown.cpp',
     'lib/views/progress_spinner.cpp',
+    'lib/views/debug_layer.cpp',
 
     'lib/views/cells/cell_bool.cpp',
     'lib/views/cells/cell_detail.cpp',

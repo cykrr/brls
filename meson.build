@@ -14,6 +14,8 @@ demo_files = files(
 
     'demo/recycling_list_tab.cpp',
     'demo/components_tab.cpp',
+    'demo/pokemon_view.cpp',
+    'demo/settings_tab.cpp',
 )
 
 borealis_demo = executable(
