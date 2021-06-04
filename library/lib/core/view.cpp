@@ -67,6 +67,16 @@ View::View()
     this->registerFilePathXMLAttribute("icon", [this](std::string value) {
         this->setIconFromFile(value);
     });
+    
+    this->registerFloatXMLAttribute("detachedX", [this](float value) {
+        this->detach();
+        this->setDetachedPositionX(value);
+    });
+    
+    this->registerFloatXMLAttribute("detachedY", [this](float value) {
+        this->detach();
+        this->setDetachedPositionY(value);
+    });
 }
 
 static int shakeAnimation(float t, float a) // a = amplitude
@@ -1118,6 +1128,16 @@ void View::detach()
 void View::setDetachedPosition(float x, float y)
 {
     this->detachedOrigin.x = x;
+    this->detachedOrigin.y = y;
+}
+
+void View::setDetachedPositionX(float x)
+{
+    this->detachedOrigin.x = x;
+}
+
+void View::setDetachedPositionY(float y)
+{
     this->detachedOrigin.y = y;
 }
 
