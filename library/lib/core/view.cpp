@@ -189,6 +189,8 @@ void View::frame(FrameContext* ctx)
         // Draw border
         if (this->borderThickness > 0.0f)
             this->drawBorder(ctx->vg, ctx, style, frame);
+        
+        this->drawLine(ctx, frame);
 
         // Draw highlight background
         if (this->highlightAlpha > 0.0f && !this->hideHighlightBackground && !this->hideHighlight)
@@ -210,8 +212,6 @@ void View::frame(FrameContext* ctx)
 
         if (this->wireframeEnabled)
             this->drawWireframe(ctx, frame);
-
-        this->drawLine(ctx, frame);
 
         //Reset clipping
         if (this->collapseState < 1.0f)
@@ -691,6 +691,8 @@ ActionIdentifier View::registerAction(std::string hintText, enum ControllerButto
         *it = { button, nextIdentifier, hintText, true, hidden, sound, actionListener };
     else
         this->actions.push_back({ button, nextIdentifier, hintText, true, hidden, sound, actionListener });
+    
+    Application::getGlobalHintsUpdateEvent()->fire();
 
     return nextIdentifier;
 }
@@ -702,6 +704,8 @@ void View::unregisterAction(ActionIdentifier identifier)
     };
     if (auto it = std::find_if(this->actions.begin(), this->actions.end(), is_matched_action); it != this->actions.end())
         this->actions.erase(it);
+    
+    Application::getGlobalHintsUpdateEvent()->fire();
 }
 
 void View::registerClickAction(ActionListener actionListener)
