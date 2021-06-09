@@ -77,6 +77,10 @@ View::View()
         this->detach();
         this->setDetachedPositionY(value);
     });
+    
+    this->registerFloatXMLAttribute("alpha", [this](float value) {
+        this->setAlpha(value);
+    });
 }
 
 static int shakeAnimation(float t, float a) // a = amplitude
