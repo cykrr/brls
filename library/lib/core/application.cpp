@@ -162,7 +162,6 @@ void Application::createWindow(std::string windowTitle)
 bool Application::mainLoop()
 {
     static ControllerState oldControllerState = {};
-    static View* firstResponder;
     
     /* Run sync functions */
     Threading::performSyncTasks();
@@ -777,6 +776,16 @@ std::string Application::getLocale()
 void Application::addToFreeQueue(View* view)
 {
     deletionPool.push_back(view);
+}
+
+void Application::tryDeinitFirstResponder(View* view)
+{
+    if (view && view == Application::firstResponder)
+    {
+        // Interrupt current gestures if presented
+        Application::firstResponder->interruptGestures(false);
+        Application::firstResponder = nullptr;
+    }
 }
 
 bool Application::loadFontFromFile(std::string fontName, std::string filePath)

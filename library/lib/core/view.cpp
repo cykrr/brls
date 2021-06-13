@@ -1365,7 +1365,8 @@ View::~View()
 
     for (tinyxml2::XMLDocument* document : this->boundDocuments)
         delete document;
-
+    
+    Application::tryDeinitFirstResponder(this);
     for (GestureRecognizer* recognizer : this->gestureRecognizers)
         delete recognizer;
 

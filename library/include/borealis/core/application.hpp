@@ -217,6 +217,8 @@ class Application
     {
         debuggingViewEnabled = enable;
     }
+    
+    static void tryDeinitFirstResponder(View* view);
 
   private:
     inline static bool inited        = false;
@@ -235,7 +237,8 @@ class Application
 
     inline static unsigned windowWidth, windowHeight;
 
-    inline static View* currentFocus;
+    inline static View* currentFocus = nullptr;
+    inline static View* firstResponder = nullptr;
 
     // Return true if input type was changed
     static bool setInputType(InputType type);
