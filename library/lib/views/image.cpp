@@ -139,7 +139,7 @@ Image::Image()
     this->registerFilePathXMLAttribute("image", [this](std::string value) {
         this->setImageFromFile(value);
     });
-    
+
     setClipsToBounds(true);
 }
 

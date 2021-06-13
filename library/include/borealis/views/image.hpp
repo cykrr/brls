@@ -114,7 +114,7 @@ class Image : public View
      * Default is CENTER.
      */
     void setImageAlign(ImageAlignment align);
-    
+
     int getTexture();
     float getOriginalImageWidth();
     float getOriginalImageHeight();
