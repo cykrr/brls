@@ -147,7 +147,7 @@ Sound View::gestureRecognizerRequest(TouchState touch, View* firstResponder)
             continue;
 
         GestureState state = recognizer->recognitionLoop(touch, this, &soundToPlay);
-        if (state == GestureState::START)
+        if (state == GestureState::START || state == GestureState::END)
             firstResponder->interruptGestures(true);
     }
 
