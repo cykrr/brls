@@ -49,7 +49,7 @@ GestureState ScrollGestureRecognizer::recognitionLoop(std::array<TouchState, TOU
     {
 #ifdef NO_TOUCH_SCROLLING
         result = GestureState::FAILED;
-#elif
+#else
         result = PanGestureRecognizer::recognitionLoop(touches, mouse, view, soundToPlay);
 #endif
     }
