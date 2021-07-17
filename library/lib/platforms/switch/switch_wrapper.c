@@ -45,6 +45,7 @@ void userAppInit()
     plInitialize(PlServiceType_User);
     setsysInitialize();
     setInitialize();
+    psmInitialize();
     nifmInitialize(NifmServiceType_User);
 
     nxlink_sock = nxlinkStdio();
@@ -60,5 +61,6 @@ void userAppExit()
     romfsExit();
     plExit();
     setsysExit();
+    psmExit();
     setExit();
 }

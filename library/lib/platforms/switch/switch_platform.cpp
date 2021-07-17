@@ -79,6 +79,18 @@ void SwitchPlatform::appletCallback(AppletHookType hookType)
     this->videoContext->appletCallback(hookType);
 }
 
+bool SwitchPlatform::canShowBatteryLevel()
+{
+    return true;
+}
+
+int SwitchPlatform::getBatteryLevel()
+{
+    u32 charge;
+    psmGetBatteryChargePercentage(&charge);
+    return (int)charge;
+}
+
 std::string SwitchPlatform::getName()
 {
     return "Switch";
