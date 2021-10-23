@@ -185,7 +185,7 @@ bool Application::mainLoop()
     inputManager->runloopStart();
     inputManager->updateTouchStates(&rawTouch);
     inputManager->updateMouseStates(&rawMouse);
-    inputManager->updateControllerState(&controllerState);
+    inputManager->updateUnifiedControllerState(&controllerState);
 
     if (isSwapInputKeys())
     {
