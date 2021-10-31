@@ -24,6 +24,12 @@
 namespace brls
 {
 
+enum class Orientation
+{
+	VERTICAL,
+	HORIZONTAL
+};
+
 enum class ScrollingBehavior
 {
     // Inputs scroll the view like the scroll wheel on a web page, focus changes only when the next view to focus is fully on screen
@@ -68,6 +74,11 @@ class ScrollingFrame : public Box
      * content view per scrolling box at a time.
      */
     void setContentView(View* view);
+
+	/**
+	 * Sets the orientation of this scrolling box
+	 */
+	void setOrientation(Orientation orientation);
 
     /**
      * Sets the scrolling behavior of this scrolling frame.
@@ -118,6 +129,8 @@ class ScrollingFrame : public Box
     float getScrollingAreaHeight();
 
     float getContentHeight();
+
+	Orientation orientation = Orientation::VERTICAL;
 
     ScrollingBehavior behavior = ScrollingBehavior::NATURAL;
     InputManager* input;

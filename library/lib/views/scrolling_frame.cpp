@@ -28,6 +28,13 @@ namespace brls
 ScrollingFrame::ScrollingFrame()
 {
     BRLS_REGISTER_ENUM_XML_ATTRIBUTE(
+        "orientation", Orientation, this->setOrientation,
+        {
+            { "vertical", Orientation::VERTICAL},
+            { "horizontal", Orientation::HORIZONTAL},
+        });
+
+    BRLS_REGISTER_ENUM_XML_ATTRIBUTE(
         "scrollingBehavior", ScrollingBehavior, this->setScrollingBehavior,
         {
             { "natural", ScrollingBehavior::NATURAL },
@@ -396,6 +403,11 @@ void ScrollingFrame::animateScrolling(float newScroll, float time)
     this->contentOffsetY.start();
 
     this->invalidate();
+}
+
+void ScrollingFrame::setOrientation(Orientation orientation)
+{
+    this->orientation = orientation;
 }
 
 void ScrollingFrame::setScrollingBehavior(ScrollingBehavior behavior)
