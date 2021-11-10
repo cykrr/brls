@@ -320,7 +320,10 @@ void ScrollingFrame::setContentView(View* view)
 
     view->detach();
     view->setCulled(false);
-    view->setWidth(this->getWidth());
+	if (orientation == brls::Orientation::VERTICAL)
+		view->setWidth(this->getWidth());
+	else
+		view->setHeight(this->getHeight());
 
     Box::addView(view); // will invalidate the scrolling box, hence calling onLayout and invalidating the contentView
 }
@@ -329,7 +332,8 @@ void ScrollingFrame::onLayout()
 {
     if (this->contentView)
     {
-        this->contentView->setWidth(this->getWidth());
+		if (orientation == brls::Orientation::VERTICAL)
+			this->contentView->setWidth(this->getWidth());
         this->contentView->invalidate();
     }
 }
