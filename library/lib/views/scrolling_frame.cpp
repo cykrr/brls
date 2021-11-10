@@ -334,6 +334,8 @@ void ScrollingFrame::onLayout()
     {
 		if (orientation == brls::Orientation::VERTICAL)
 			this->contentView->setWidth(this->getWidth());
+		else 
+			this->contentView->setHeight(this->getHeight());
         this->contentView->invalidate();
     }
 }
