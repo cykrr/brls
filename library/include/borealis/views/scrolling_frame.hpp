@@ -26,8 +26,8 @@ namespace brls
 
 enum class Orientation
 {
-	VERTICAL,
-	HORIZONTAL
+    VERTICAL,
+    HORIZONTAL
 };
 
 enum class ScrollingBehavior
@@ -78,7 +78,7 @@ class ScrollingFrame : public Box
 	/**
 	 * Sets the orientation of this scrolling box
 	 */
-	void setOrientation(Orientation orientation);
+    void setOrientation(Orientation orientation);
 
     /**
      * Sets the scrolling behavior of this scrolling frame.
@@ -117,7 +117,11 @@ class ScrollingFrame : public Box
     float middleY = 0; // y + height/2
     float bottomY = 0; // y + height
 
+    float middleX = 0; // x + width/2
+    float bottomX = 0; // x + width
+
     Animatable contentOffsetY = 0.0f;
+    Animatable contentOffsetX = 0.0f;
 
     void prebakeScrolling();
     bool updateScrolling(bool animated);
@@ -126,11 +130,14 @@ class ScrollingFrame : public Box
     void scrollAnimationTick();
 
     float getScrollingAreaTopBoundary();
+    float getScrollingAreaRightBoundary();
     float getScrollingAreaHeight();
+    float getScrollingAreaWidth();
 
     float getContentHeight();
+    float getContentWidth();
 
-	Orientation orientation = Orientation::VERTICAL;
+    Orientation orientation = Orientation::VERTICAL;
 
     ScrollingBehavior behavior = ScrollingBehavior::NATURAL;
     InputManager* input;
@@ -146,3 +153,4 @@ class ScrollingFrame : public Box
 };
 
 } // namespace brls
+//vim: set ts=8 sw=4 expandtab

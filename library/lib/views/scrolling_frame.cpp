@@ -345,9 +345,19 @@ float ScrollingFrame::getScrollingAreaTopBoundary()
     return this->getY();
 }
 
+float ScrollingFrame::getScrollingAreaRightBoundary()
+{
+    return this->getX();
+}
+
 float ScrollingFrame::getScrollingAreaHeight()
 {
     return this->getHeight();
+}
+
+float ScrollingFrame::getScrollingAreaWidth()
+{
+    return this->getWidth();
 }
 
 void ScrollingFrame::willAppear(bool resetState)
@@ -368,16 +378,24 @@ void ScrollingFrame::willAppear(bool resetState)
 void ScrollingFrame::prebakeScrolling()
 {
     // Prebaked values for scrolling
-    float y      = this->getScrollingAreaTopBoundary();
-    float height = this->getScrollingAreaHeight();
+    if(orientation == brls::Orientation::VERTICAL){
+        float y      = this->getScrollingAreaTopBoundary();
+        float height = this->getScrollingAreaHeight();
 
-    this->middleY = y + height / 2;
-    this->bottomY = y + height;
+        this->middleY = y + height / 2;
+        this->bottomY = y + height;
+    } else {
+        float x     = this->getScrollingAreaRightBoundary();
+        float width = this->getScrollingAreaWidth();
+
+        this->middleX = x + width / 2;
+        this->bottomX = x + width;
+    }
 }
 
 void ScrollingFrame::startScrolling(bool animated, float newScroll)
 {
-    if (newScroll == this->contentOffsetY)
+    if (newScroll == this->contentOffsetY || newScroll == this->contentOffsetX)
         return;
 
     if (animated)
@@ -385,28 +403,45 @@ void ScrollingFrame::startScrolling(bool animated, float newScroll)
         Style style = Application::getStyle();
         animateScrolling(newScroll, style["brls/animations/highlight"]);
     }
-    else
-    {
+    if (orientation == brls::Orientation::VERTICAL){
         this->contentOffsetY.stop();
         this->contentOffsetY = newScroll;
+    } else {
+        this->contentOffsetX.stop();
+        this->contentOffsetX = newScroll;
+    }
         this->scrollAnimationTick();
         this->invalidate();
-    }
 }
 
 void ScrollingFrame::animateScrolling(float newScroll, float time)
 {
-    this->contentOffsetY.stop();
+    if (orientation == brls::Orientation::VERTICAL){
+        this->contentOffsetY.stop();
 
-    this->contentOffsetY.reset();
+        this->contentOffsetY.reset();
 
-    this->contentOffsetY.addStep(newScroll, time, EasingFunction::quadraticOut);
+        this->contentOffsetY.addStep(newScroll, time, EasingFunction::quadraticOut);
 
-    this->contentOffsetY.setTickCallback([this] {
-        this->scrollAnimationTick();
-    });
+        this->contentOffsetY.setTickCallback([this] {
+            this->scrollAnimationTick();
+	});
 
-    this->contentOffsetY.start();
+        this->contentOffsetY.start();
+	} else {
+            this->contentOffsetX.stop();
+
+            this->contentOffsetX.reset();
+
+            this->contentOffsetX.addStep(newScroll, time, EasingFunction::quadraticOut);
+
+            this->contentOffsetX.setTickCallback([this] {
+                    this->scrollAnimationTick();
+            });
+
+            this->contentOffsetX.start();
+
+	}
 
     this->invalidate();
 }
@@ -427,6 +462,14 @@ float ScrollingFrame::getContentHeight()
         return 0;
 
     return this->contentView->getHeight();
+}
+
+float ScrollingFrame::getContentWidth()
+{
+    if (!this->contentView)
+        return 0;
+
+    return this->contentView->getWidth();
 }
 
 void ScrollingFrame::setContentOffsetY(float value, bool animated)
@@ -553,27 +596,51 @@ bool ScrollingFrame::updateScrolling(bool animated)
 
     View* focusedView = getDefaultFocus();
     float localY      = focusedView->getLocalY();
+    float localX      = focusedView->getLocalX();
+
+    int currentSelectionMiddleOnScreen;
+    float newScroll;
+
+    float contentHeight;
+    float bottomLimit;
+
+    float contentWidth;
+    float rightLimit;
+
     View* parent      = focusedView->getParent();
 
     while (parent && dynamic_cast<ScrollingFrame*>(parent->getParent()) == nullptr)
     {
+    if ( orientation == brls::Orientation::VERTICAL){
         localY += parent->getLocalY();
-        parent = parent->getParent();
+        currentSelectionMiddleOnScreen = localY + focusedView->getHeight() / 2;
+        newScroll = currentSelectionMiddleOnScreen - this->getHeight() / 2;
+        contentHeight = this->getContentHeight();
+        bottomLimit   = contentHeight - this->getScrollingAreaHeight();
+
+        if (newScroll > bottomLimit)
+            newScroll = bottomLimit;
+
+        if (contentHeight <= getHeight())
+            newScroll = 0;
+
+    } else {
+        localX += parent->getLocalX();
+        currentSelectionMiddleOnScreen = localX + focusedView->getWidth() / 2;
+        newScroll = currentSelectionMiddleOnScreen - this->getWidth() / 2;
+        contentWidth = this->getContentWidth();
+        rightLimit   = contentHeight - this->getScrollingAreaWidth();
+
+        if (newScroll > rightLimit)
+                newScroll = rightLimit;
+
+        if (contentWidth <= getWidth())
+                newScroll = 0;
+    }
+    parent = parent->getParent();
     }
 
-    int currentSelectionMiddleOnScreen = localY + focusedView->getHeight() / 2;
-    float newScroll                    = currentSelectionMiddleOnScreen - this->getHeight() / 2;
-
-    float contentHeight = this->getContentHeight();
-    float bottomLimit   = contentHeight - this->getScrollingAreaHeight();
-
     if (newScroll < 0)
-        newScroll = 0;
-
-    if (newScroll > bottomLimit)
-        newScroll = bottomLimit;
-
-    if (contentHeight <= getHeight())
         newScroll = 0;
 
     //Start animation
@@ -585,7 +652,10 @@ bool ScrollingFrame::updateScrolling(bool animated)
 Rect ScrollingFrame::getVisibleFrame()
 {
     Rect frame = getLocalFrame();
-    frame.origin.y += this->contentOffsetY;
+    if (orientation == brls::Orientation::VERTICAL)
+        frame.origin.y += this->contentOffsetY;
+    else 
+        frame.origin.x += this->contentOffsetX;
     return frame;
 }
 
@@ -635,3 +705,4 @@ ScrollingFrame::~ScrollingFrame()
 }
 
 } // namespace brls
+//vim: set ts=8 sw=4 expandtab
